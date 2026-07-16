@@ -121,8 +121,15 @@
 			"uk": "Адаптер ioBroker для ПЛК Rockwell CompactLogix/ControlLogix через Ethernet/IP",
 			"zh-cn": "用于通过以太网/IP 的 Rockwell CompactLogix/ControlLogix PLC 的 ioBroker 适配器"
 		},
-		"authors": ["gokturk413 <gokturk413@gmail.com>"],
-		"keywords": ["rockwell", "ethernet-ip", "controllogix", "compactlogix"],
+		"authors": [
+			"gokturk413 <gokturk413@gmail.com>"
+		],
+		"keywords": [
+			"rockwell",
+			"ethernet-ip",
+			"controllogix",
+			"compactlogix"
+		],
 		"licenseInformation": {
 			"type": "commercial",
 			"license": "CC-BY-NC-4.0",
@@ -155,7 +162,7 @@
 		],
 		"globalDependencies": [
 			{
-				"admin": ">=7.6.17"
+				"admin": ">=7.6.20"
 			}
 		],
 		"stopTimeout": 10000

@@ -11,4 +11,4 @@ coverage/
 Thumbs.db
 
 # local test junk
-*.log
+*.log.commitinfo

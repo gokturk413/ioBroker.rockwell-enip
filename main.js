@@ -7,7 +7,7 @@
  * and encoded in C#, alarms and on-demand reads over sendTo.
  */
 
-const fs = require('fs');
+const fs = require('node:fs');
 const utils = require('@iobroker/adapter-core');
 const { load } = require('./lib/engineBridge');
 const { resolveProjectFile, writeProjectChunk } = require('./lib/projectFile');

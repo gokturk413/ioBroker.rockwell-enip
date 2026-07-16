@@ -24,15 +24,15 @@
 		"node": ">=22"
 	},
 	"dependencies": {
-		"@iobroker/adapter-core": "^3.3.2",
+		"@iobroker/adapter-core": "^3.4.3",
 		"@material-ui/icons": "^4.11.3"
 	},
 	"optionalDependencies": {
-		"iobroker.rockwell_ethernetip-win32-x64": "0.0.11",
-		"iobroker.rockwell_ethernetip-linux-x64": "0.0.11",
-		"iobroker.rockwell_ethernetip-linux-arm64": "0.0.11",
 		"iobroker.rockwell_ethernetip-darwin-arm64": "0.0.11",
-		"iobroker.rockwell_ethernetip-darwin-x64": "0.0.11"
+		"iobroker.rockwell_ethernetip-darwin-x64": "0.0.11",
+		"iobroker.rockwell_ethernetip-linux-arm64": "0.0.11",
+		"iobroker.rockwell_ethernetip-linux-x64": "0.0.11",
+		"iobroker.rockwell_ethernetip-win32-x64": "0.0.11"
 	},
 	"devDependencies": {
 		"@alcalzone/release-script": "^5.2.1",
@@ -44,7 +44,7 @@
 		"@iobroker/eslint-config": "^2.2.0",
 		"@iobroker/testing": "^5.2.2",
 		"@material-ui/core": "^4.12.4",
-		"@tsconfig/node20": "^20.1.9",
+		"@tsconfig/node22": "^22.0.5",
 		"@types/iobroker": "npm:@iobroker/types@^7.1.0",
 		"@types/node": "^20.19.37",
 		"@types/react": "^18.3.1",
