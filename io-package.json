@@ -93,58 +93,6 @@
 				"pl": "Tag browser: Optix-style extended-property nodes, full 48-attribute @Alarms per condition, tri-state checkboxes showing already-configured tags. All tags are writable (write gating removed). Objects warning limit lifts automatically. Commercial license.",
 				"uk": "Tag browser: Optix-style extended-property nodes, full 48-attribute @Alarms per condition, tri-state checkboxes showing already-configured tags. All tags are writable (write gating removed). Objects warning limit lifts automatically. Commercial license.",
 				"zh-cn": "Tag browser: Optix-style extended-property nodes, full 48-attribute @Alarms per condition, tri-state checkboxes showing already-configured tags. All tags are writable (write gating removed). Objects warning limit lifts automatically. Commercial license."
-			},
-			"0.0.4": {
-				"en": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"de": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"ru": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"pt": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"nl": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"fr": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"it": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"es": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"pl": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"uk": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI.",
-				"zh-cn": "Fix: large project files upload in 1 MB chunks (a 22 MB L5X was dropped by the message bus), parse format follows the stored file's extension, upload progress and parse errors are shown in the admin UI."
-			},
-			"0.0.3": {
-				"en": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"de": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"ru": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"pt": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"nl": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"fr": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"it": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"es": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"pl": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"uk": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view.",
-				"zh-cn": "Project-file browse overhaul: L5X decorated data expands every structured tag with member values (PlantPAx AOIs included), large files parse from disk, project-source selector in the admin, CLI tree view."
-			},
-			"0.0.2": {
-				"en": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"de": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"ru": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"pt": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"nl": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"fr": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"it": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"es": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"pl": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"uk": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages.",
-				"zh-cn": "First release on the AOT engine: tiered polling, PlantPAx v4/v5 driver modes, tag-based alarms, per-platform engine packages."
-			},
-			"0.0.1": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"uk": "Початкова версія",
-				"zh-cn": "首次出版"
 			}
 		},
 		"titleLang": {
@@ -173,19 +121,12 @@
 			"uk": "Адаптер ioBroker для ПЛК Rockwell CompactLogix/ControlLogix через Ethernet/IP",
 			"zh-cn": "用于通过以太网/IP 的 Rockwell CompactLogix/ControlLogix PLC 的 ioBroker 适配器"
 		},
-		"authors": [
-			"gokturk413 <gokturk413@gmail.com>"
-		],
-		"keywords": [
-			"rockwell",
-			"ethernet-ip",
-			"controllogix",
-			"compactlogix"
-		],
+		"authors": ["gokturk413 <gokturk413@gmail.com>"],
+		"keywords": ["rockwell", "ethernet-ip", "controllogix", "compactlogix"],
 		"licenseInformation": {
-			"type": "paid",
-			"license": "SEE LICENSE IN LICENSE",
-			"link": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip/blob/main/LICENSE"
+			"type": "commercial",
+			"license": "CC-BY-NC-4.0",
+			"link": "https://github.com/gokturk413"
 		},
 		"platform": "Javascript/Node.js",
 		"icon": "rockwell_ethernetip.png",
@@ -214,7 +155,7 @@
 		],
 		"globalDependencies": [
 			{
-				"admin": ">=7.0.23"
+				"admin": ">=7.6.17"
 			}
 		],
 		"stopTimeout": 10000

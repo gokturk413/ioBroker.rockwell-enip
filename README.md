@@ -32,8 +32,8 @@ personnel can access the ioBroker host.
 
 ## Features
 
-- All PLC communication runs in a **.NET Native AOT engine** (libplctag statically
-  linked) loaded as a Node-API addon — no JS protocol stack
+- All PLC communication runs in a **high-performance native protocol engine** —
+  no JS protocol stack
 - Driver modes: `standard`, `plantpax_v4` (bulk AOI reads), `plantpax_v5`
   (member-by-member reads, ExternalAccess-filtered writes)
 - Tiered polling (fast/normal/slow per tag) with batched change events
@@ -67,11 +67,8 @@ They are listed as `optionalDependencies`, so an install on an unlisted platform
 still succeeds — the adapter then starts, logs which paths it searched, and stays
 idle instead of crashing.
 
-`lib/engineBridge.js` resolves the engine in this order:
-
-1. the optional platform package (released installs)
-2. `prebuilds/<rid>/rockwell_engine.node` (locally built)
-3. `native/RockwellEngine.Node/bin/Release/net10.0/<rid>/publish/rockwell_engine.{dll,so,dylib}` (dev publish)
+The adapter loads the platform package automatically; when it is missing it
+logs which locations it searched and stays idle instead of crashing.
 
 ## Licensing
 
@@ -99,7 +96,7 @@ PLC until it is.
 | `parallelConnections` | `1`             | parallel CIP sessions (2–4 multiply read throughput on L8x)               |
 | `pushMode`            | `false`         | change-driven push over TCP (needs the generated PLC program)             |
 | `pushPort`            | `44819`         | TCP port the engine listens on for the push agent                         |
-| `connectionTimeout`   | `5000`          | libplctag timeout, ms                                                     |
+| `connectionTimeout`   | `5000`          | PLC request timeout, ms                                                   |
 | `tags[]`              | `[]`            | `{name, address?, type, tier?, write, unit}`                              |
 
 `name` is the ioBroker state path, `address` the PLC tag path (when absent, `name`
@@ -112,7 +109,7 @@ is used for both). Only tags with `write: true` may be written back to the PLC.
 
 ## PLC push mode (Phase G)
 
-Polling has a ceiling: libplctag's per-read cost grows with the live handle count,
+Polling has a ceiling: per-read cost grows with the number of monitored tags,
 so a 12k-tag project sweeps in seconds, not milliseconds. Push mode moves change
 detection into the controller — the PLC streams only changed values over a TCP
 socket, so pushed tags update in well under a second with near-zero traffic on a
@@ -151,8 +148,7 @@ the current push selection), `parseL5K {fileContent}` (legacy), `testConnection`
 
 ## Native engine
 
-The PLC protocol engine (C#/.NET Native AOT + statically linked libplctag) is
-developed in a **separate private repository**. Its per-platform binaries are
+The PLC protocol engine is developed in a **separate private repository**. Its per-platform binaries are
 published to npm as the platform packages listed above and are pulled in
 automatically on install — nothing to build for adapter users or contributors.
 
@@ -213,8 +209,15 @@ automatically on install — nothing to build for adapter users or contributors.
 
 ## License
 
-Commercial software — see [LICENSE](LICENSE). Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>. All rights reserved.
+Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>
 
-This adapter requires a paid license key per machine. Installing without a key
-is permitted for evaluation only; the runtime engine will not start without a
-valid key. For license purchase and support contact gokturk413@gmail.com.
+Licensed under **Creative Commons Attribution-NonCommercial 4.0 International
+(CC BY-NC 4.0)** — see [LICENSE](LICENSE).
+
+- **Non-commercial use** is free of charge (the adapter additionally ships a
+  built-in free tier: all features, up to 1000 tags, adapter instance 0).
+- **Commercial use requires a per-machine license key** — see
+  [Licensing](#licensing); contact [gokturk413](https://github.com/gokturk413).
+
+The native protocol engine is distributed as prebuilt binaries via the npm
+platform packages and enforces the license key at runtime.

@@ -8,8 +8,9 @@
 	},
 	"contributors": [],
 	"homepage": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip",
-	"license": "SEE LICENSE IN LICENSE",
+	"license": "CC-BY-NC-4.0",
 	"keywords": [
+		"ioBroker",
 		"rockwell",
 		"ethernet-ip",
 		"controllogix",
@@ -20,7 +21,7 @@
 		"url": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip.git"
 	},
 	"engines": {
-		"node": ">= 20"
+		"node": ">=22"
 	},
 	"dependencies": {
 		"@iobroker/adapter-core": "^3.3.2",
@@ -34,10 +35,10 @@
 		"iobroker.rockwell_ethernetip-darwin-x64": "0.0.11"
 	},
 	"devDependencies": {
-		"@alcalzone/release-script": "^5.1.1",
-		"@alcalzone/release-script-plugin-iobroker": "^5.1.2",
-		"@alcalzone/release-script-plugin-license": "^5.1.1",
-		"@alcalzone/release-script-plugin-manual-review": "^5.1.1",
+		"@alcalzone/release-script": "^5.2.1",
+		"@alcalzone/release-script-plugin-iobroker": "^5.2.0",
+		"@alcalzone/release-script-plugin-license": "^5.2.0",
+		"@alcalzone/release-script-plugin-manual-review": "^5.2.0",
 		"@iobroker/adapter-dev": "^1.5.0",
 		"@iobroker/adapter-react-v5": "^8.1.3",
 		"@iobroker/eslint-config": "^2.2.0",
@@ -91,7 +92,6 @@
 	"bugs": {
 		"url": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip/issues"
 	},
-	"comment:overrides": "@material-ui v4 pins its react peers to ^16||^17; the admin UI runs React 18. The pairing works at runtime — without these, npm ci aborts with ERESOLVE.",
 	"overrides": {
 		"@material-ui/core": {
 			"react": "^18.3.1",
