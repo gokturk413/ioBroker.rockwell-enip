@@ -1,0 +1,54 @@
+Commercial Software License Agreement
+
+Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>. All rights reserved.
+
+This software ("ioBroker.rockwell_ethernetip", including its native engine
+binaries and admin interface) is commercial, proprietary software. It is
+licensed, not sold.
+
+1. LICENSE GRANT
+   Subject to payment of the applicable license fee and activation with a
+   valid license key issued by the copyright holder, you are granted a
+   non-exclusive, non-transferable right to install and use the software on
+   the licensed machine(s). One license key is valid for one machine unless
+   agreed otherwise in writing.
+
+2. EVALUATION
+   Installing the package without a license key is permitted for evaluation
+   purposes only. Without a valid license key the software will not start
+   its runtime engine.
+
+3. RESTRICTIONS
+   You may NOT, except to the extent permitted by applicable mandatory law:
+   - copy (other than for backup), rent, lease, lend, sell, sublicense,
+     redistribute or otherwise transfer the software or any license key;
+   - reverse engineer, decompile, disassemble or otherwise attempt to
+     derive the source code of the software or its license mechanism;
+   - remove or alter any proprietary notices;
+   - circumvent, disable or interfere with the license validation.
+
+4. OWNERSHIP
+   The software is protected by copyright law. The copyright holder retains
+   all rights, title and interest in and to the software, including all
+   copies. Third-party open-source components contained in the software
+   remain under their respective licenses (e.g. libplctag - MPL 2.0).
+
+5. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   THE SOFTWARE IS NOT DESIGNED, TESTED OR CERTIFIED FOR USE AS A SAFETY
+   COMPONENT. IT MUST NOT BE USED AS THE SOLE MEANS OF PROTECTION OF
+   PERSONS, MACHINES OR PROCESSES.
+
+6. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES
+   OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+   OTHER DEALINGS IN THE SOFTWARE.
+
+7. TERMINATION
+   This license terminates automatically if you breach any of its terms.
+   Upon termination you must delete all copies of the software.
+
+For license purchase and support: gokturk413@gmail.com

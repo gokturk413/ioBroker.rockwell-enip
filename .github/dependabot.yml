@@ -1,0 +1,31 @@
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: '/'
+      schedule:
+          interval: monthly
+          time: '00:05'
+          timezone: Europe/Berlin
+      open-pull-requests-limit: 15
+      # supply-chain safety: only take versions that survived a week in the wild
+      cooldown:
+          default-days: 7
+      assignees:
+          - gokturk413
+      versioning-strategy: increase
+      ignore:
+          # major @types/node bumps track Node majors — handled manually with CI
+          - dependency-name: '@types/node'
+            update-types: ['version-update:semver-major']
+
+    - package-ecosystem: github-actions
+      directory: '/'
+      schedule:
+          interval: monthly
+          time: '00:05'
+          timezone: Europe/Berlin
+      open-pull-requests-limit: 15
+      cooldown:
+          default-days: 7
+      assignees:
+          - gokturk413

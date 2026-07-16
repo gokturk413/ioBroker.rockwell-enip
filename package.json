@@ -1,0 +1,108 @@
+{
+	"name": "iobroker.rockwell_ethernetip",
+	"version": "0.0.11",
+	"description": "ioBroker adapter for Rockwell CompactLogix/ControlLogix PLCs via Ethernet/IP",
+	"author": {
+		"name": "gokturk413",
+		"email": "gokturk413@gmail.com"
+	},
+	"contributors": [],
+	"homepage": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip",
+	"license": "SEE LICENSE IN LICENSE",
+	"keywords": [
+		"rockwell",
+		"ethernet-ip",
+		"controllogix",
+		"compactlogix"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip.git"
+	},
+	"engines": {
+		"node": ">= 20"
+	},
+	"dependencies": {
+		"@iobroker/adapter-core": "^3.3.2",
+		"@material-ui/icons": "^4.11.3"
+	},
+	"optionalDependencies": {
+		"iobroker.rockwell_ethernetip-win32-x64": "0.0.11",
+		"iobroker.rockwell_ethernetip-linux-x64": "0.0.11",
+		"iobroker.rockwell_ethernetip-linux-arm64": "0.0.11",
+		"iobroker.rockwell_ethernetip-darwin-arm64": "0.0.11",
+		"iobroker.rockwell_ethernetip-darwin-x64": "0.0.11"
+	},
+	"devDependencies": {
+		"@alcalzone/release-script": "^5.1.1",
+		"@alcalzone/release-script-plugin-iobroker": "^5.1.2",
+		"@alcalzone/release-script-plugin-license": "^5.1.1",
+		"@alcalzone/release-script-plugin-manual-review": "^5.1.1",
+		"@iobroker/adapter-dev": "^1.5.0",
+		"@iobroker/adapter-react-v5": "^8.1.3",
+		"@iobroker/eslint-config": "^2.2.0",
+		"@iobroker/testing": "^5.2.2",
+		"@material-ui/core": "^4.12.4",
+		"@tsconfig/node20": "^20.1.9",
+		"@types/iobroker": "npm:@iobroker/types@^7.1.0",
+		"@types/node": "^20.19.37",
+		"@types/react": "^18.3.1",
+		"@types/react-dom": "^18.3.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"typescript": "~5.9.3"
+	},
+	"main": "main.js",
+	"files": [
+		"admin{,/!(src)/**}/!(tsconfig|tsconfig.*|.eslintrc).{json,json5}",
+		"admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
+		"admin/aoi/*.L5X",
+		"admin/build/",
+		"!admin/build/**/*.map",
+		"lib/",
+		"!lib/**/*.test.js",
+		"www/",
+		"io-package.json",
+		"LICENSE",
+		"main.js"
+	],
+	"scripts": {
+		"prebuild": "rimraf admin/build",
+		"build": "build-adapter react",
+		"watch": "build-adapter react --watch",
+		"prebuild:react": "rimraf admin/build",
+		"build:react": "build-adapter react",
+		"watch:react": "build-adapter react --watch",
+		"test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
+		"test:package": "mocha test/package --exit",
+		"test:integration": "mocha test/integration --exit",
+		"test": "npm run test:js && npm run test:package",
+		"check": "tsc --noEmit -p tsconfig.check.json",
+		"lint": "eslint -c eslint.config.mjs .",
+		"engine:check": "node native/test/node-ci-check.cjs",
+		"engine:smoke": "node native/test/node-smoke.cjs",
+		"hardware-id": "node tools/hardware-id.cjs",
+		"pack:prebuilds": "node tools/pack-prebuilds.mjs",
+		"sync:optional": "node tools/sync-optional-versions.mjs",
+		"version": "node tools/sync-optional-versions.mjs && npm install --package-lock-only --ignore-scripts && git add package.json package-lock.json io-package.json",
+		"translate": "translate-adapter",
+		"release": "release-script"
+	},
+	"bugs": {
+		"url": "https://github.com/gokturk413/ioBroker.rockwell_ethernetip/issues"
+	},
+	"comment:overrides": "@material-ui v4 pins its react peers to ^16||^17; the admin UI runs React 18. The pairing works at runtime — without these, npm ci aborts with ERESOLVE.",
+	"overrides": {
+		"@material-ui/core": {
+			"react": "^18.3.1",
+			"react-dom": "^18.3.1",
+			"@types/react": "^18.3.1"
+		},
+		"@material-ui/icons": {
+			"react": "^18.3.1",
+			"react-dom": "^18.3.1",
+			"@types/react": "^18.3.1"
+		}
+	},
+	"readmeFilename": "README.md"
+}

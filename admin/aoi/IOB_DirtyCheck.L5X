@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--ioBroker selective change detector: compares only -->
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="38.00" TargetName="IOB_DirtyCheck" TargetType="AddOnInstructionDefinition" TargetRevision="2.2 " TargetLastEdited="2026-07-16T10:29:17.859Z" TargetSignature="16#35ad_d397" CurrentLanguage="en-US" ContainsContext="true" ExportDate="Thu Jul 16 11:32:03 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans"
+>
+<Controller Use="Context" Name="PPax_FTOptix_5_30_00">
+<DataTypes Use="Context">
+</DataTypes>
+<AddOnInstructionDefinitions Use="Context">
+<EncodedData EncodedType="AddOnInstructionDefinition" Name="IOB_DirtyCheck" Revision="2.2" Vendor="ioBroker" SignatureID="35ADD397" SignatureTimestamp="2026-07-16T10:29:17.859Z" EditedDate="2026-07-16T10:29:17.859Z" SoftwareRevision="v38.00" EncryptionConfig="9">
+<Description>
+<![CDATA[ioBroker selective change detector: compares only ]]>
+</Description>
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Enable Input - System Defined Parameter]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Enable Output - System Defined Parameter]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="CurBuf" TagType="Base" DataType="DINT" Dimensions="512" Usage="InOut" Radix="Decimal" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Instance COPied into DINT words: COP(MyPAI, Buf[0], instWords).]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Instance COPied into DINT words: COP(MyPAI, Buf[0], instWords).]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="Shadow" TagType="Base" DataType="DINT" Dimensions="512" Usage="InOut" Radix="Decimal" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Per-instance last-known words (one Shadow array per instance).]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Per-instance last-known words (one Shadow array per instance).]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="WordList" TagType="Base" DataType="DINT" Dimensions="512" Usage="InOut" Radix="Decimal" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Word indices to compare — generated from the selected members' real offsets.]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Word indices to compare — generated from the selected members' real offsets.]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="Mask" TagType="Base" DataType="DINT" Dimensions="512" Usage="InOut" Radix="Decimal" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Per-entry bitmask: -1 for full words (REAL/DINT), selected bits only for BOOL words.]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Per-entry bitmask: -1 for full words (REAL/DINT), selected bits only for BOOL words.]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+<Parameter Name="NumWords" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of valid WordList/Mask entries.]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Number of valid WordList/Mask entries.]]>
+</LocalizedDescription>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Index" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[This instance's slot in DirtyFlags.]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[This instance's slot in DirtyFlags.]]>
+</LocalizedDescription>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="DirtyFlags" TagType="Base" DataType="DINT" Dimensions="1024" Usage="InOut" Radix="Decimal" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Shared dirty-flag array; the engine polls it, reads flagged instances and clears them.]]>
+<LocalizedDescription Lang="en-US">
+<![CDATA[Shared dirty-flag array; the engine polls it, reads flagged instances and clears them.]]>
+</LocalizedDescription>
+</Description>
+</Parameter>
+</Parameters>
+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</EncodedData>
+</AddOnInstructionDefinitions>
+</Controller>
+</RSLogix5000Content>

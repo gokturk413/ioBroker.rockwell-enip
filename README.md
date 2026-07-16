@@ -1,0 +1,220 @@
+![Logo](admin/rockwell_ethernetip.png)
+
+# ioBroker.rockwell_ethernetip
+
+[![NPM version](https://img.shields.io/npm/v/iobroker.rockwell_ethernetip.svg)](https://www.npmjs.com/package/iobroker.rockwell_ethernetip)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.rockwell_ethernetip.svg)](https://www.npmjs.com/package/iobroker.rockwell_ethernetip)
+![Number of Installations](https://iobroker.live/badges/rockwell_ethernetip-installed.svg)
+![Current version in stable repository](https://iobroker.live/badges/rockwell_ethernetip-stable.svg)
+
+[![NPM](https://nodei.co/npm/iobroker.rockwell_ethernetip.png?downloads=true)](https://nodei.co/npm/iobroker.rockwell_ethernetip/)
+
+**Tests:** ![Test and Release](https://github.com/gokturk413/ioBroker.rockwell_ethernetip/workflows/Test%20and%20Release/badge.svg)
+
+## rockwell_ethernetip adapter for ioBroker
+
+ioBroker adapter for Rockwell CompactLogix/ControlLogix PLCs via Ethernet/IP
+
+## ⚠️ Disclaimer
+
+**THIS SOFTWARE COMMUNICATES WITH — AND CAN WRITE TO — INDUSTRIAL CONTROL
+EQUIPMENT. IT IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. THE AUTHOR ACCEPTS NO RESPONSIBILITY OR LIABILITY WHATSOEVER FOR ANY
+DAMAGE TO EQUIPMENT, LOSS OF PRODUCTION, DATA LOSS, FINANCIAL LOSS, INJURY OR
+DEATH ARISING FROM ITS USE OR MISUSE. IT IS NOT DESIGNED, TESTED OR CERTIFIED
+FOR SAFETY-CRITICAL OR LIFE-SUPPORT APPLICATIONS AND MUST NEVER BE USED AS
+PART OF A SAFETY FUNCTION. YOU USE THIS SOFTWARE ENTIRELY AT YOUR OWN RISK.**
+
+Writing tag values changes the state of a running machine. Always validate the
+complete configuration against a non-production controller (e.g. FactoryTalk
+Logix Echo) before connecting to a live plant, and make sure only authorized
+personnel can access the ioBroker host.
+
+## Features
+
+- All PLC communication runs in a **.NET Native AOT engine** (libplctag statically
+  linked) loaded as a Node-API addon — no JS protocol stack
+- Driver modes: `standard`, `plantpax_v4` (bulk AOI reads), `plantpax_v5`
+  (member-by-member reads, ExternalAccess-filtered writes)
+- Tiered polling (fast/normal/slow per tag) with batched change events
+- PlantPAx v5 **tag-based alarms** (`@Alarms` tree) from the project file,
+  live state over standard CIP reads — no FactoryTalk dependency
+- L5K/L5X project parsing for tag browse, alarm definitions and UDT layouts
+- On-demand reads, tag leases and stats over `sendTo`
+
+## Requirements
+
+- A **license key** for the host machine. The engine does not poll without a valid
+  license — see [Licensing](#licensing).
+- One of the supported platforms below.
+
+## Installation & platform binaries
+
+The PLC engine is a native binary. It is **not** bundled into the adapter package —
+each platform's engine is published as its own npm package that declares its `os`
+and `cpu`, so npm downloads **only the one matching the installing machine**
+(≈7.5 MB instead of all five):
+
+| Platform                               | RID           | Package                                     |
+| -------------------------------------- | ------------- | ------------------------------------------- |
+| Windows x64                            | `win-x64`     | `iobroker.rockwell_ethernetip-win32-x64`    |
+| Linux x64                              | `linux-x64`   | `iobroker.rockwell_ethernetip-linux-x64`    |
+| Linux arm64 (Raspberry Pi 4/5, 64-bit) | `linux-arm64` | `iobroker.rockwell_ethernetip-linux-arm64`  |
+| macOS Apple Silicon                    | `osx-arm64`   | `iobroker.rockwell_ethernetip-darwin-arm64` |
+| macOS Intel                            | `osx-x64`     | `iobroker.rockwell_ethernetip-darwin-x64`   |
+
+They are listed as `optionalDependencies`, so an install on an unlisted platform
+still succeeds — the adapter then starts, logs which paths it searched, and stays
+idle instead of crashing.
+
+`lib/engineBridge.js` resolves the engine in this order:
+
+1. the optional platform package (released installs)
+2. `prebuilds/<rid>/rockwell_engine.node` (locally built)
+3. `native/RockwellEngine.Node/bin/Release/net10.0/<rid>/publish/rockwell_engine.{dll,so,dylib}` (dev publish)
+
+## Licensing
+
+A license is issued for the machine that runs the adapter, identified by its
+**Hardware ID**. Open the adapter settings → **Connection** tab → **Check License**
+to see this machine's Hardware ID, then send it to
+[gokturk413](https://github.com/gokturk413) to obtain a key.
+
+Paste the key into the **License Key** field and press **Check License** again —
+it reports whether the key is valid for this machine. The engine does not poll the
+PLC until it is.
+
+## Configuration
+
+| Field                 | Default         | Meaning                                                                   |
+| --------------------- | --------------- | ------------------------------------------------------------------------- |
+| `plcHost`             | —               | PLC/gateway IP                                                            |
+| `plcSlot`             | `0`             | CPU slot (connection path `1,<slot>`)                                     |
+| `mode`                | `standard`      | `standard` \| `plantpax_v4` \| `plantpax_v5`                              |
+| `licenseKey`          | —               | license key for this machine                                              |
+| `projectFile`         | —               | absolute path of the uploaded L5K/L5X (set by the admin upload)           |
+| `projectFormat`       | —               | `l5k` \| `l5x` \| `live` — browse source (file upload or live controller) |
+| `pollTiers`           | `250/1000/5000` | fast/normal/slow poll periods, ms                                         |
+| `cipPayload`          | `0` (auto)      | CIP payload size: `0` auto, `508`, `4002`                                 |
+| `parallelConnections` | `1`             | parallel CIP sessions (2–4 multiply read throughput on L8x)               |
+| `pushMode`            | `false`         | change-driven push over TCP (needs the generated PLC program)             |
+| `pushPort`            | `44819`         | TCP port the engine listens on for the push agent                         |
+| `connectionTimeout`   | `5000`          | libplctag timeout, ms                                                     |
+| `tags[]`              | `[]`            | `{name, address?, type, tier?, write, unit}`                              |
+
+`name` is the ioBroker state path, `address` the PLC tag path (when absent, `name`
+is used for both). Only tags with `write: true` may be written back to the PLC.
+
+> _\*Note on source-protected AOIs (PlantPAx P_* blocks):_* the L5K export stores these
+> as encoded blobs without member structure, so their tags appear without children.
+> Upload the **L5X** export instead — it carries the full member tree and values for
+> every tag, including source-protected AOIs.
+
+## PLC push mode (Phase G)
+
+Polling has a ceiling: libplctag's per-read cost grows with the live handle count,
+so a 12k-tag project sweeps in seconds, not milliseconds. Push mode moves change
+detection into the controller — the PLC streams only changed values over a TCP
+socket, so pushed tags update in well under a second with near-zero traffic on a
+quiet process.
+
+Flow:
+
+1. Browse and add your tags as usual (they get initial values by polling).
+2. **Export PLC push program (L5X)** on the Connection tab. The adapter generates a
+   partial-import L5X (shadow buffers + `IOB_PushAgent` AOI + a generated
+   `IOB_PushMap` routine that copies each selected tag into its slot).
+3. Import it in Studio 5000, wire `JSR IOB_PushMap` + the `IOB_PushAgent` call into a
+   ~100 ms periodic task, point `IOB_Push_Cfg` at the ioBroker host/`pushPort`, download.
+4. Enable **PLC push mode** and restart the adapter. Pushed tags leave polling; the
+   engine falls back to polling automatically if the socket goes silent (>10 s) and
+   resumes push on reconnect.
+
+Supported by every PlantPAx-5-capable controller (5580/5380/5480, EP/ERMP process
+variants) via the embedded Socket Object. v1 pushes BOOL/SINT/INT/DINT/REAL/LINT;
+STRING and `@Alarms`/`@AlarmSet` leaves stay on CIP polling. Writes (ioBroker→PLC)
+always use the CIP path.
+
+## sendTo API
+
+`browseTags` (model-based, needs `projectFile`), `browseController` (live symbol
+list + controller templates over EtherNet/IP; alarm conditions and extended
+properties come from the configured project file when present, otherwise the
+standard PlantPAx v5 conditions are live-probed per template),
+`parseProject {content, format}`,
+`parseProjectPath {path, format?}` (parses a saved file from disk — preferred for
+large exports), `generatePushProgram {hostIp}` (returns the partial-import L5X for
+the current push selection), `parseL5K {fileContent}` (legacy), `testConnection`,
+`reloadTags {tags}`, `readValues {paths}`, `leaseTags {paths, ttlMs}`,
+`getAlarms {tag?}`, `getStats`, `getLicenseInfo {licenseKey?}`,
+`saveProjectFile {name, content}`.
+
+## Native engine
+
+The PLC protocol engine (C#/.NET Native AOT + statically linked libplctag) is
+developed in a **separate private repository**. Its per-platform binaries are
+published to npm as the platform packages listed above and are pulled in
+automatically on install — nothing to build for adapter users or contributors.
+
+## Development
+
+| Command                    | Description                                   |
+| -------------------------- | --------------------------------------------- |
+| `npm run build`            | build the admin React UI                      |
+| `npm test`                 | adapter unit + package tests                  |
+| `npm run test:integration` | boot the adapter against a temporary ioBroker |
+| `npm run check`            | TypeScript type check                         |
+
+## Changelog
+
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### **WORK IN PROGRESS**
+-->
+
+### 0.0.11 (2026-07-16)
+
+- (gokturk413) License editions with a keyless free tier: Free = all features, up to 1000 tags, instance 0 only; Standard = instances 0..1 with 3000 tags each; Professional = instances 0..2 with 10000 tags each; Unlimited
+- (gokturk413) New Instructions tab with step-by-step setup and downloadable source-protected Add-On Instructions
+
+### 0.0.10 (2026-07-16)
+
+- (gokturk413) Group-based PLC push v2: change flags polled over plain CIP (works on FactoryTalk Logix Echo and physical controllers)
+- (gokturk413) Engine-managed watch lists that survive Studio downloads, batched shadow reads and change events
+- (gokturk413) Hidden AOI internals excluded automatically, scan class "none", group-level scan-class dropdown, fast recursive tag deletion
+
+### 0.0.9 (2026-07-12)
+
+- (gokturk413) Security: the push Add-On Instruction logic no longer ships in any artifact
+
+### 0.0.8 (2026-07-12)
+
+- (gokturk413) PLC push mode over a TCP socket (physical controllers); parallel CIP connections
+
+### 0.0.7 (2026-07-12)
+
+- (gokturk413) Live @Alarms/@AlarmSet, EP properties as file-served states, parallel CIP connections, importTags bulk config
+
+### 0.0.6 (2026-07-10)
+
+- (gokturk413) Live controller browse, batch polling via Multiple Service Packets
+
+### 0.0.5 (2026-07-10)
+
+- (gokturk413) Extended-property nodes, 48-attribute @Alarms tree, commercial license
+
+### 0.0.3 (2026-07-10)
+
+- (gokturk413) Project-file browse for source-protected PlantPAx v5 AOIs (decorated L5X data)
+
+### 0.0.2 (2026-07-09)
+
+- (gokturk413) initial release
+
+## License
+
+Commercial software — see [LICENSE](LICENSE). Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>. All rights reserved.
+
+This adapter requires a paid license key per machine. Installing without a key
+is permitted for evaluation only; the runtime engine will not start without a
+valid key. For license purchase and support contact gokturk413@gmail.com.

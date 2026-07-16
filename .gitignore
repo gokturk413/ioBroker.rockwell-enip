@@ -1,0 +1,14 @@
+# dependencies / build artefacts
+node_modules/
+*.tgz
+.nyc_output/
+coverage/
+
+# IDE / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# local test junk
+*.log
