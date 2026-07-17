@@ -170,8 +170,8 @@ automatically on install — nothing to build for adapter users or contributors.
 
 ### 0.0.13 (2026-07-17)
 
-- (gokturk413) License hardware id bound to the motherboard — survives disk swaps, failed disks and attached USB/external drives
-- (gokturk413) Licenses carry a stable id for provable re-issue after a hardware change
+- (gokturk413) License activation is stable across common hardware changes — replacing/adding a disk or attaching a USB/external drive no longer affects an existing license
+- (gokturk413) A genuine hardware change can be re-issued without a new purchase
 
 ### 0.0.12 (2026-07-16)
 
