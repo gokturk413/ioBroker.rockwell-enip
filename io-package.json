@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "rockwell_ethernetip",
-		"version": "0.0.13",
+		"version": "0.0.14",
 		"news": {
 			"0.0.14": {
 				"en": "The engine for all platforms now ships inside a single npm package (compressed), instead of five separate per-platform packages — only the binary matching the host is expanded on first start.",
@@ -121,8 +121,15 @@
 			"uk": "Адаптер ioBroker для ПЛК Rockwell CompactLogix/ControlLogix через Ethernet/IP",
 			"zh-cn": "用于通过以太网/IP 的 Rockwell CompactLogix/ControlLogix PLC 的 ioBroker 适配器"
 		},
-		"authors": ["gokturk413 <gokturk413@gmail.com>"],
-		"keywords": ["rockwell", "ethernet-ip", "controllogix", "compactlogix"],
+		"authors": [
+			"gokturk413 <gokturk413@gmail.com>"
+		],
+		"keywords": [
+			"rockwell",
+			"ethernet-ip",
+			"controllogix",
+			"compactlogix"
+		],
 		"licenseInformation": {
 			"type": "commercial",
 			"license": "CC-BY-NC-4.0",

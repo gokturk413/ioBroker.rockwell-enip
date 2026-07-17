@@ -77,7 +77,7 @@
 		"engine:check": "node native/test/node-ci-check.cjs",
 		"engine:smoke": "node native/test/node-smoke.cjs",
 		"hardware-id": "node tools/hardware-id.cjs",
-		"version": "npm install --package-lock-only --ignore-scripts && git add package.json package-lock.json io-package.json",
+		"version": "node tools/sync-io-version.mjs && npm install --package-lock-only --ignore-scripts && git add package.json package-lock.json io-package.json",
 		"translate": "translate-adapter",
 		"release": "release-script",
 		"pack:engines": "node tools/gzip-prebuilds.mjs"
