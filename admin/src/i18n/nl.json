@@ -1,5 +1,5 @@
 {
-	"rockwell_ethernetip adapter settings": "Adapterinstellingen voor rockwell_ethernetip",
+	"rockwell-enip adapter settings": "Adapterinstellingen voor rockwell-enip",
 	"option1": "optie1",
 	"option2": "optie2",
 	"Driver Mode": "Driver Mode",
@@ -35,7 +35,7 @@
 	"Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.": "Leeg = gratis niveau: alle functies, tot 1000 tags, alleen adapterinstantie 0. Een licentie verhoogt de taglimiet en ontgrendelt extra instanties.",
 	"Hidden AOI internal — excluded from group selection, tier defaults to none": "Verborgen AOI-intern — uitgesloten van groepsselectie, scanklasse standaard none",
 	"Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller": "Wijzigingsvlaggen werken overal (incl. Logix Echo); TCP-stream vereist een fysieke controller",
-	"Change flags (polled — works on Logix Echo)": "Wijzigingsvlaggen (gepolld — werkt met Logix Echo)",
+	"Change flags (polled — any controller)": "Wijzigingsvlaggen (gepolld — elke controller)",
 	"TCP stream (Socket Object — physical PLC only)": "TCP-stream (Socket Object — alleen fysieke PLC)",
 	"Export PLC push program (L5X)": "PLC-pushprogramma exporteren (L5X)",
 	"Export failed": "Export mislukt",
@@ -69,5 +69,6 @@
 	"Parse File": "Bestand parsen",
 	"Parsing file": "Bestand wordt geparst",
 	"File parsed successfully": "Bestand succesvol geparst",
-	"Error parsing file": "Fout bij het parsen van het bestand"
+	"Error parsing file": "Fout bij het parsen van het bestand",
+	"Building objects": "Objecten bouwen"
 }

@@ -1,5 +1,5 @@
 {
-	"rockwell_ethernetip adapter settings": "Налаштування адаптера для rockwell_ethernetip",
+	"rockwell-enip adapter settings": "Налаштування адаптера для rockwell-enip",
 	"option1": "варіант1",
 	"option2": "варіант2",
 	"Driver Mode": "Driver Mode",
@@ -35,7 +35,7 @@
 	"Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.": "Порожньо = безкоштовний рівень: усі функції, до 1000 тегів, лише екземпляр 0. Ліцензія підвищує ліміт тегів і відкриває додаткові екземпляри.",
 	"Hidden AOI internal — excluded from group selection, tier defaults to none": "Приховане внутрішнє поле AOI — виключене з групового вибору, клас за замовчуванням none",
 	"Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller": "Прапорці змін працюють скрізь (вкл. Logix Echo); TCP-потік потребує фізичний контролер",
-	"Change flags (polled — works on Logix Echo)": "Прапорці змін (опитування — працює з Logix Echo)",
+	"Change flags (polled — any controller)": "Прапорці змін (опитування — будь-який контролер)",
 	"TCP stream (Socket Object — physical PLC only)": "TCP-потік (Socket Object — лише фізичний ПЛК)",
 	"Export PLC push program (L5X)": "Експорт push-програми ПЛК (L5X)",
 	"Export failed": "Помилка експорту",
@@ -69,5 +69,6 @@
 	"Parse File": "Розібрати файл",
 	"Parsing file": "Розбір файлу",
 	"File parsed successfully": "Файл успішно розібрано",
-	"Error parsing file": "Помилка розбору файлу"
+	"Error parsing file": "Помилка розбору файлу",
+	"Building objects": "Створення об'єктів"
 }

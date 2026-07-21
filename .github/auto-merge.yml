@@ -1,0 +1,6 @@
+# Auto-merge rules for Dependabot pull requests, consumed by the
+# automerge-dependabot workflow. Only minor and patch bumps are merged
+# automatically once CI passes; major updates always require manual review.
+- match:
+    dependency_type: all
+    update_type: "semver:minor"

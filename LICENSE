@@ -2,7 +2,7 @@ Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 
 Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>
 
-This work — the ioBroker.rockwell_ethernetip adapter sources — is licensed
+This work — the ioBroker.rockwell-enip adapter sources — is licensed
 under the Creative Commons Attribution-NonCommercial 4.0 International
 License. To view a copy of this license, visit
 
@@ -33,7 +33,7 @@ Hardware ID (shown by the adapter's "Check License" button) to obtain one.
 
 NATIVE ENGINE
 
-The native protocol engine binaries (the iobroker.rockwell_ethernetip-<platform>
+The native protocol engine binaries (the iobroker.rockwell-enip-<platform>
 npm packages) are proprietary components of this product. They are licensed for
 use solely together with this adapter and enforce the license key at runtime.
 Reverse engineering, decompilation or redistribution outside the npm packages

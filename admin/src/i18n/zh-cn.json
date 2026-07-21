@@ -1,5 +1,5 @@
 {
-	"rockwell_ethernetip adapter settings": "rockwell_ethernetip的适配器设置",
+	"rockwell-enip adapter settings": "rockwell-enip的适配器设置",
 	"option1": "选项1",
 	"option2": "选项2",
 	"Driver Mode": "Driver Mode",
@@ -35,7 +35,7 @@
 	"Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.": "留空 = 免费版：全部功能，最多 1000 个标签，仅限适配器实例 0。许可证可提高标签上限并解锁更多实例。",
 	"Hidden AOI internal — excluded from group selection, tier defaults to none": "隐藏的 AOI 内部成员——不参与组选择，扫描类别默认为 none",
 	"Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller": "变化标志在任何环境下均可用（包括 Logix Echo）；TCP 流需要物理控制器",
-	"Change flags (polled — works on Logix Echo)": "变化标志（轮询——支持 Logix Echo）",
+	"Change flags (polled — any controller)": "变更标志（轮询 — 任意控制器）",
 	"TCP stream (Socket Object — physical PLC only)": "TCP 流（Socket 对象——仅限物理 PLC）",
 	"Export PLC push program (L5X)": "导出 PLC 推送程序 (L5X)",
 	"Export failed": "导出失败",
@@ -69,5 +69,6 @@
 	"Parse File": "解析文件",
 	"Parsing file": "正在解析文件",
 	"File parsed successfully": "文件解析成功",
-	"Error parsing file": "解析文件出错"
+	"Error parsing file": "解析文件出错",
+	"Building objects": "正在创建对象"
 }

@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -163,6 +164,7 @@ class Settings extends React.Component {
 			uploadingFile: false,
 			uploadProgress: 0,
 			projectFileError: null,
+			buildProgress: 0,
 		};
 
 		this.nodeCounter = 0;
@@ -170,6 +172,20 @@ class Settings extends React.Component {
 
 	componentDidMount() {
 		this.checkLicense(this.props.native.licenseKey || '');
+		// live object-build progress published by the adapter (info.buildProgress)
+		this.buildProgressId = `rockwell-enip.${this.props.instance}.info.buildProgress`;
+		this.onBuildProgress = (id, state) => this.setState({ buildProgress: state ? Number(state.val) || 0 : 0 });
+		this.props.socket
+			.getState(this.buildProgressId)
+			.then(s => this.onBuildProgress(this.buildProgressId, s))
+			.catch(() => {});
+		this.props.socket.subscribeState(this.buildProgressId, this.onBuildProgress);
+	}
+
+	componentWillUnmount() {
+		if (this.buildProgressId) {
+			this.props.socket.unsubscribeState(this.buildProgressId, this.onBuildProgress);
+		}
 	}
 
 	checkLicense = async licenseKey => {
@@ -269,7 +285,7 @@ class Settings extends React.Component {
 	};
 
 	sendCommand = async (command, message) => {
-		const target = `rockwell_ethernetip.${this.props.instance}`;
+		const target = `rockwell-enip.${this.props.instance}`;
 		const result = await this.props.socket.sendTo(target, command, message);
 		return result;
 	};
@@ -280,7 +296,7 @@ class Settings extends React.Component {
 		tags.splice(index, 1);
 		this.props.onChange('tags', tags);
 		if (tag) {
-			const prefix = `rockwell_ethernetip.${this.props.instance}`;
+			const prefix = `rockwell-enip.${this.props.instance}`;
 			try {
 				await this.props.socket.delObject(`${prefix}.${tag.name}`);
 			} catch (e) {
@@ -1766,7 +1782,7 @@ self.onmessage = function(e) {
 				</Step>
 				<Step n={3}>
 					<b>Tag Configuration tab</b>: browse the tree, tick tags or whole groups, then{' '}
-					<i>Add Selected Tags</i>. States appear under <Code>rockwell_ethernetip.X.ControllerTags…</Code>
+					<i>Add Selected Tags</i>. States appear under <Code>rockwell-enip.X.ControllerTags…</Code>
 				</Step>
 				<Step n={4}>
 					<b>Selected Tags tab</b>: assign scan tiers — per tag or per group (the dropdown on a group row
@@ -1876,7 +1892,7 @@ self.onmessage = function(e) {
 					<br />• After a Studio <b>download</b> the adapter detects the wiped watch lists and rewrites them
 					within a few seconds — if you also changed the pushed instance set, do a fresh Export/Import.
 					<br />• Windows upgrade: stop the instance, <Code>npm i</Code>, then{' '}
-					<Code>iobroker upload rockwell_ethernetip</Code> (the browser caches the admin bundle), then start.
+					<Code>iobroker upload rockwell-enip</Code> (the browser caches the admin bundle), then start.
 				</P>
 			</Paper>
 		);
@@ -1902,6 +1918,15 @@ self.onmessage = function(e) {
 						<Tab label={I18n.t('Instructions')} />
 					</Tabs>
 				</Paper>
+
+				{this.state.buildProgress > 0 && this.state.buildProgress < 100 && (
+					<Paper style={{ marginBottom: 16, padding: 12 }}>
+						<Typography variant="body2" style={{ marginBottom: 6 }}>
+							{I18n.t('Building objects')}: {this.state.buildProgress}%
+						</Typography>
+						<LinearProgress variant="determinate" value={this.state.buildProgress} />
+					</Paper>
+				)}
 
 				{activeTab === 0 && (
 					<Paper className={classes.section}>
@@ -2023,7 +2048,7 @@ self.onmessage = function(e) {
 								'Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller',
 							)}
 						>
-							<MenuItem value="poll">{I18n.t('Change flags (polled — works on Logix Echo)')}</MenuItem>
+							<MenuItem value="poll">{I18n.t('Change flags (polled — any controller)')}</MenuItem>
 							<MenuItem value="socket">
 								{I18n.t('TCP stream (Socket Object — physical PLC only)')}
 							</MenuItem>

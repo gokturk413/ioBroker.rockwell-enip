@@ -55,44 +55,69 @@ jobs:
           # install-command: 'npm install'
           build: true
 
-# TODO: To enable automatic npm releases, set up trusted publishing in your npm account
-# See https://docs.npmjs.com/trusted-publishers for more details
-# Then uncomment the following block:
+  # Publishes the adapter to npm with provenance. The native engine binaries are
+  # built in the private engine repo and attached to its GitHub release; this job
+  # pulls them in before publishing so the npm package ships every platform.
+  #
+  # Gated OFF by default (vars.ENABLE_DEPLOY != 'true') so it never runs — and never
+  # spends CI — until trusted publishing is set up. To enable automated releases:
+  #   1. npm: configure trusted publishing for iobroker.rockwell-enip → repo
+  #      gokturk413/ioBroker.rockwell-enip, workflow test-and-release.yml.
+  #   2. GitHub: add secret ENGINE_ASSETS_TOKEN (PAT with read access to the private
+  #      engine repo's releases) and set repository variable ENABLE_DEPLOY = true.
+  # Then tag the public repo (vX.Y.Z) after the engine repo has published its release
+  # assets for the same version.
+  deploy:
+    needs: [check-and-lint, adapter-tests]
+    if: |
+      vars.ENABLE_DEPLOY == 'true' &&
+      github.repository == 'gokturk413/ioBroker.rockwell-enip' &&
+      contains(github.event.head_commit.message, '[skip ci]') == false &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
 
-#  # Deploys the final package to NPM
-#  deploy:
-#    needs: [check-and-lint, adapter-tests]
-#
-#    # Trigger this step only when a commit on any branch is tagged with a version number
-#    if: |
-#      contains(github.event.head_commit.message, '[skip ci]') == false &&
-#      github.event_name == 'push' &&
-#      startsWith(github.ref, 'refs/tags/v')
-#
-#    runs-on: ubuntu-latest
-#
-#    # Write permissions are required to create Github releases
-#    permissions:
-#      id-token: write
-#      contents: write
-#
-#    steps:
-#      - uses: ioBroker/testing-action-deploy@v1
-#        with:
-#          node-version: '22.x'
-#          # Uncomment the following line if your adapter cannot be installed using 'npm ci'
-#          # install-command: 'npm install'
-#          build: true
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#
-#          # When using Sentry for error reporting, Sentry can be informed about new releases
-#          # To enable create a API-Token in Sentry (User settings, API keys)
-#          # Enter this token as a GitHub secret (with name SENTRY_AUTH_TOKEN) in the repository options
-#          # Then uncomment and customize the following block:
-#          sentry: true
-#          sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-#          sentry-project: "iobroker-rockwell_ethernetip"
-#          sentry-version-prefix: "iobroker.rockwell_ethernetip"
-#          sentry-sourcemap-paths: "admin/build/"
-#          # If your sentry project is linked to a GitHub repository, you can enable the following option
-#          # sentry-github-integration: true
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # OIDC → npm provenance / trusted publishing
+      contents: write # create the GitHub release
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Check tag matches package version
+        run: |
+          pkg="$(node -p "require('./package.json').version")"
+          tag="${GITHUB_REF_NAME#v}"
+          [ "$pkg" = "$tag" ] || { echo "package.json is $pkg but the tag is $tag"; exit 1; }
+
+      - name: Pull engine binaries from the engine repo release
+        env:
+          GH_TOKEN: ${{ secrets.ENGINE_ASSETS_TOKEN }}
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          for rid in win-x64 linux-x64 linux-arm64 osx-arm64 osx-x64; do
+            mkdir -p "prebuilds/$rid"
+            gh release download "v$ver" --repo gokturk413/rockwell_ethernetip-engine \
+              --pattern "rockwell_engine-$rid.node" --output "prebuilds/$rid/rockwell_engine.node"
+            gzip -9 -f "prebuilds/$rid/rockwell_engine.node"
+          done
+          ls -lR prebuilds
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:package
+
+      - name: Publish to npm with provenance
+        run: |
+          npm install -g npm@latest
+          npm publish --provenance --access public
+
+      - name: GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true

@@ -1,17 +1,17 @@
-![Logo](admin/rockwell_ethernetip.png)
+![Logo](admin/rockwell-enip.png)
 
-# ioBroker.rockwell_ethernetip
+# ioBroker.rockwell-enip
 
-[![NPM version](https://img.shields.io/npm/v/iobroker.rockwell_ethernetip.svg)](https://www.npmjs.com/package/iobroker.rockwell_ethernetip)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.rockwell_ethernetip.svg)](https://www.npmjs.com/package/iobroker.rockwell_ethernetip)
-![Number of Installations](https://iobroker.live/badges/rockwell_ethernetip-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/rockwell_ethernetip-stable.svg)
+[![NPM version](https://img.shields.io/npm/v/iobroker.rockwell-enip.svg)](https://www.npmjs.com/package/iobroker.rockwell-enip)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.rockwell-enip.svg)](https://www.npmjs.com/package/iobroker.rockwell-enip)
+![Number of Installations](https://iobroker.live/badges/rockwell-enip-installed.svg)
+![Current version in stable repository](https://iobroker.live/badges/rockwell-enip-stable.svg)
 
-[![NPM](https://nodei.co/npm/iobroker.rockwell_ethernetip.png?downloads=true)](https://nodei.co/npm/iobroker.rockwell_ethernetip/)
+[![NPM](https://nodei.co/npm/iobroker.rockwell-enip.png?downloads=true)](https://nodei.co/npm/iobroker.rockwell-enip/)
 
-**Tests:** ![Test and Release](https://github.com/gokturk413/ioBroker.rockwell_ethernetip/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test and Release](https://github.com/gokturk413/ioBroker.rockwell-enip/workflows/Test%20and%20Release/badge.svg)
 
-## rockwell_ethernetip adapter for ioBroker
+## rockwell-enip adapter for ioBroker
 
 ioBroker adapter for Rockwell CompactLogix/ControlLogix PLCs via Ethernet/IP
 
@@ -159,6 +159,15 @@ automatically on install — nothing to build for adapter users or contributors.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### 0.0.16 (2026-07-21)
+
+- (gokturk413) Published under the adapter's final id `iobroker.rockwell-enip` (ioBroker ids use hyphens)
+
+### 0.0.15 (2026-07-21)
+
+- (gokturk413) Object tree rebuilt to the ioBroker device–channel–state model — tag values now live under `.value` with correct roles and valid ids; existing installs recreate their objects on first start
+- (gokturk413) Much faster object build for large tag sets with an admin progress bar; more reliable connection test and value typing
 
 ### 0.0.14 (2026-07-17)
 

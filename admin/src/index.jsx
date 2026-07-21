@@ -13,7 +13,7 @@ function build() {
 	root.render(
 		<ThemeProvider theme={theme(themeName)}>
 			<App
-				adapterName="rockwell_ethernetip"
+				adapterName="rockwell-enip"
 				onThemeChange={_theme => {
 					themeName = _theme;
 					build();

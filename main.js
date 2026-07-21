@@ -22,7 +22,7 @@ class RockwellEthernetip extends utils.Adapter {
 	constructor(options) {
 		super({
 			...options,
-			name: 'rockwell_ethernetip',
+			name: 'rockwell-enip',
 		});
 		this.on('ready', this.onReady.bind(this));
 		this.on('stateChange', this.onStateChange.bind(this));
@@ -30,7 +30,11 @@ class RockwellEthernetip extends utils.Adapter {
 		this.on('unload', this.onUnload.bind(this));
 
 		this.engine = null;
-		this.pathToState = {}; // PLC path -> ioBroker state id
+		this.pathToState = {}; // CIP path -> ioBroker object id
+		this.tagByObjectId = {}; // object id -> tag config (write-back)
+		this.objectIdByName = {}; // tag.name -> object id (EP apply, subscribe)
+		this.terminating = false; // set on unload so long object builds abort cleanly
+		this.buildingObjects = false; // true while (re)building the tree — gates writes/push/commands
 		this.licenseValid = false;
 		this.lastHeartbeat = 0;
 		this.watchdog = null;
@@ -78,9 +82,6 @@ class RockwellEthernetip extends utils.Adapter {
 		// Always create ioBroker state objects on startup, regardless of PLC connectivity
 		await this.createStateObjects();
 		await this.raiseObjectsWarnLimit();
-		for (const t of this.config.tags || []) {
-			this.pathToState[t.address || t.name] = t.name;
-		}
 
 		if (!this.config.plcHost) {
 			this.log.warn('PLC host is not configured. Please configure the adapter.');
@@ -100,6 +101,11 @@ class RockwellEthernetip extends utils.Adapter {
 		this.engine.onEvent(json => this.onEngineEvent(json));
 		this.engine.init(JSON.stringify(this.engineConfig()));
 		this.engine.start();
+		const pollCount = (this.config.tags || []).filter(t => (t.type || '').toUpperCase() !== 'EP').length;
+		this.log.info(
+			`Engine started — resolving ${pollCount} tag(s) on the PLC. The first poll pass can take a few minutes at ` +
+				`this scale while tag handles are established; values appear once it completes (this is normal).`,
+		);
 		this.subscribeConfiguredStates();
 		this.applyEpStates().catch(e => this.log.debug(`EP states skipped: ${e.message}`));
 
@@ -143,6 +149,9 @@ class RockwellEthernetip extends utils.Adapter {
 			return;
 		}
 		if (ev.type === 'changes') {
+			if (this.buildingObjects) {
+				return; // do not push values into the tree while it is being (re)built
+			}
 			const fromPush = ev.src === 'push';
 			for (const c of ev.data) {
 				if (fromPush) {
@@ -166,7 +175,9 @@ class RockwellEthernetip extends utils.Adapter {
 				}
 				const stateId = this.pathToState[c.Path];
 				if (stateId) {
-					this.setState(stateId, { val: c.Value, ack: true, q: c.Quality === 'Good' ? 0 : 0x42 }).catch(e =>
+					const tag = this.tagByObjectId[stateId];
+					const val = tag ? this.coerceValue(c.Value, this.getStateType(tag.type)) : c.Value;
+					this.setState(stateId, { val, ack: true, q: c.Quality === 'Good' ? 0 : 0x42 }).catch(e =>
 						this.log.warn(`setState ${stateId}: ${e.message}`),
 					);
 				}
@@ -209,41 +220,56 @@ class RockwellEthernetip extends utils.Adapter {
 	}
 
 	/**
-	 * Create hierarchical folders/channels from tag path
+	 * Replace characters ioBroker forbids in an object-id segment (the engine may
+	 * emit synthetic nodes such as "@Alarms"); the dot separator is handled by the
+	 * caller. Never returns an empty segment.
 	 *
-	 * @param tagName - sanitized state path, dot-separated
-	 * @param seenPaths - channels already created in this run; mutated
-	 * @param tagIds - ids of configured tags: these stay states, never channels
-	 * @returns the full state id for the leaf
+	 * @param seg - one dot-delimited path segment
+	 * @returns the segment with every char outside [A-Za-z0-9_-] turned into "_"
 	 */
-	async createHierarchy(tagName, seenPaths, tagIds) {
-		// tagName is already sanitized (no brackets) - split on dots only
-		const parts = tagName.split('.').filter(p => p);
-		let currentPath = '';
-		const promises = [];
+	sanitizeSegment(seg) {
+		const s = String(seg).replace(/[^A-Za-z0-9_-]/g, '_');
+		return s || '_';
+	}
 
-		for (let i = 0; i < parts.length - 1; i++) {
-			currentPath = currentPath ? `${currentPath}.${parts[i]}` : parts[i];
-			if (!seenPaths.has(currentPath)) {
-				seenPaths.add(currentPath);
-				// A parent that is itself a configured tag (e.g. the value tag under
-				// which an EP state like .Description lives) must stay a STATE — its
-				// own tag entry creates it; a channel here would shadow the value.
-				if (tagIds && tagIds.has(currentPath)) {
-					continue;
-				}
-				promises.push(
-					this.setObjectNotExistsAsync(currentPath, {
-						type: 'channel',
-						common: { name: parts[i] },
-						native: {},
-					}),
-				);
-			}
+	/**
+	 * Sanitize a dotted tag path segment-by-segment; dots stay as id separators.
+	 *
+	 * @param name - dotted tag path
+	 * @returns the ioBroker-safe object id path
+	 */
+	sanitizePath(name) {
+		return String(name)
+			.split('.')
+			.filter(p => p)
+			.map(p => this.sanitizeSegment(p))
+			.join('.');
+	}
+
+	/**
+	 * ioBroker role + write flag for a tag. Role "value" is never used: the checker
+	 * forbids it with write=true and rejects it for boolean (E1011/E1009). EP states
+	 * are file-served metadata and stay read-only; live PLC tags stay writable so the
+	 * ioBroker→PLC control path keeps working.
+	 *
+	 * @param iobType - resolved ioBroker common.type
+	 * @param isEp - true for file-served extended-property metadata
+	 * @returns {{role: string, write: boolean}} the ioBroker role and its write flag
+	 */
+	roleFor(iobType, isEp) {
+		if (isEp) {
+			return { role: 'text', write: false };
 		}
-
-		await Promise.all(promises);
-		return parts.join('.');
+		switch (iobType) {
+			case 'boolean':
+				return { role: 'switch', write: true };
+			case 'number':
+				return { role: 'level', write: true };
+			case 'string':
+				return { role: 'text', write: true };
+			default:
+				return { role: 'state', write: true };
+		}
 	}
 
 	/**
@@ -266,7 +292,7 @@ class RockwellEthernetip extends utils.Adapter {
 			if (value === undefined) {
 				continue;
 			}
-			await this.setState(t.name, { val: String(value), ack: true });
+			await this.setState(this.objectIdByName[t.name] || t.name, { val: String(value), ack: true });
 			applied++;
 		}
 		this.log.info(`EP states: ${applied}/${eps.length} served from the project file`);
@@ -292,55 +318,221 @@ class RockwellEthernetip extends utils.Adapter {
 	}
 
 	/**
-	 * Create ioBroker state objects for all configured tags (no PLC connection needed).
-	 * Called at adapter startup so objects always exist.
+	 * Create the ioBroker object tree for all configured tags (no PLC connection
+	 * needed) and (re)build the id routing maps. A tag that has other tags beneath
+	 * it is a CHANNEL — its own value, if any, lives in a ".value" child, because a
+	 * state must never carry children (E2004). Ids are sanitized (no "@" etc.) and
+	 * roles/types follow the checker rules. The engine keeps addressing tags by CIP
+	 * path, so `pathToState` bridges path -> object id.
 	 */
 	async createStateObjects() {
 		const tags = this.config.tags || [];
+		this.buildingObjects = true; // gate writes/push/engine commands until the tree is ready
+
+		// progress state so the admin (and any dashboard) can show how far the build is
+		await this.setObjectNotExistsAsync('info.buildProgress', {
+			type: 'state',
+			common: {
+				name: 'Object build progress',
+				type: 'number',
+				role: 'value',
+				unit: '%',
+				read: true,
+				write: false,
+				def: 0,
+			},
+			native: {},
+		});
+		this.setState('info.buildProgress', 0, true);
+
+		// Snapshot the current tree ONCE up front (settled DB, before any writes):
+		// reused for both type-change detection and pruning. Reading here — not per
+		// tag, and not after the create/delete churn — removes ~2 DB round-trips per
+		// object (much faster at 10k+ tags) and avoids the "empty object!" spam that
+		// getAdapterObjects logs while the object index is mid-churn.
+		const existing = {};
+		try {
+			// getObjectList scans real keys directly (getKeysViaScan + mget) and silently
+			// skips empties. getAdapterObjects/getObjectView instead logs "empty object!"
+			// for every stale index row — thousands of them on a large tree.
+			const startkey = `${this.namespace}.`;
+			const res = await this.getObjectListAsync({ startkey, endkey: startkey + String.fromCharCode(0x9999) });
+			const cut = startkey.length;
+			for (const row of (res && res.rows) || []) {
+				if (row && row.value) {
+					existing[row.id.slice(cut)] = row.value;
+				}
+			}
+		} catch (e) {
+			this.log.debug(`object snapshot failed: ${e.message}`);
+		}
 
 		if (tags.length === 0) {
 			this.log.info('No tags configured yet');
+			await this.pruneStaleObjects(new Set(), existing); // drop a tree left by a previous config
+			this.buildingObjects = false;
 			return;
 		}
 
-		const seenPaths = new Set();
-		const tagIds = new Set(tags.map(t => t.name));
-		const BATCH = 50;
+		// A configured tag is a container when another configured tag lives beneath
+		// it (dotted prefix). Containers become channels; leaves become states.
+		const nameSet = new Set(tags.map(t => t.name));
+		const containers = new Set();
+		for (const t of tags) {
+			const parts = t.name.split('.').filter(p => p);
+			let p = '';
+			for (let i = 0; i < parts.length - 1; i++) {
+				p = p ? `${p}.${parts[i]}` : parts[i];
+				if (nameSet.has(p)) {
+					containers.add(p);
+				}
+			}
+		}
+
+		// routing maps rebuilt from scratch on every (re)load
+		this.pathToState = {}; // CIP path -> object id (engine addresses by path)
+		this.tagByObjectId = {}; // object id -> tag config (ioBroker -> PLC write-back)
+		this.objectIdByName = {}; // tag.name -> object id (EP apply, subscribe)
+
+		const channelsMade = new Set();
+		const desiredIds = new Set();
+		const BATCH = 200;
+		const progressStep = Math.max(BATCH, Math.ceil(tags.length / 10));
+		let created = 0;
+		let nextMark = progressStep;
+
+		const ensureChannel = async id => {
+			if (channelsMade.has(id)) {
+				return;
+			}
+			channelsMade.add(id);
+			const ex = existing[id];
+			if (ex) {
+				if (ex.type !== 'channel') {
+					// upgrade: this id used to be a state (a value that also carried
+					// children) — convert it; setObjectNotExists cannot change the type
+					const custom = ex.common && ex.common.custom;
+					await this.setObjectAsync(id, {
+						type: 'channel',
+						common: custom ? { name: id.split('.').pop(), custom } : { name: id.split('.').pop() },
+						native: {},
+					});
+				}
+				return;
+			}
+			await this.setObjectNotExistsAsync(id, {
+				type: 'channel',
+				common: { name: id.split('.').pop() },
+				native: {},
+			});
+		};
 
 		for (let i = 0; i < tags.length; i += BATCH) {
+			if (this.terminating) {
+				return; // adapter is shutting down — stop touching the DB
+			}
 			const batch = tags.slice(i, i + BATCH);
 			await Promise.all(
 				batch.map(async tagConfig => {
-					const plcAddress = tagConfig.address || tagConfig.name;
-					const stateId = await this.createHierarchy(tagConfig.name, seenPaths, tagIds);
-					const leafName = tagConfig.name.split('.').pop() || tagConfig.name;
+					const isEp = (tagConfig.type || '').toUpperCase() === 'EP';
+					const iobType = this.getStateType(tagConfig.type);
+					const { role, write } = this.roleFor(iobType, isEp);
+					const sanit = this.sanitizePath(tagConfig.name);
+					const isContainer = containers.has(tagConfig.name);
+					// value child leaf; avoid clobbering a real "value" member
+					const leaf = nameSet.has(`${tagConfig.name}.value`) ? '_value' : 'value';
+					const objectId = isContainer ? `${sanit}.${leaf}` : sanit;
+
+					// channels for every container level (ancestors + this node when it is one)
+					const segs = sanit.split('.');
+					const levels = isContainer ? segs.length : segs.length - 1;
+					let cur = '';
+					for (let s = 0; s < levels; s++) {
+						cur = cur ? `${cur}.${segs[s]}` : segs[s];
+						desiredIds.add(cur);
+						await ensureChannel(cur);
+					}
+
 					const common = {
-						name: leafName,
-						type: this.getStateType(tagConfig.type),
-						role: 'value',
+						name: objectId.split('.').pop(),
+						type: iobType,
+						role,
 						read: true,
-						write: true,
+						write,
 						unit: tagConfig.unit || '',
 					};
-					const native = { tagName: plcAddress, tagType: tagConfig.type };
-					const existing = await this.getObjectAsync(stateId).catch(() => null);
-					if (existing && existing.type !== 'state') {
-						// repair: an EP child once auto-created this id as a channel;
+					const native = { tagName: tagConfig.address || tagConfig.name, tagType: tagConfig.type };
+					const ex = existing[objectId];
+					if (ex && ex.type !== 'state') {
+						// a former channel/state-with-children id now becomes the value leaf;
 						// extendObject cannot change the type, a full set can
-						const keepCustom = existing.common && existing.common.custom;
-						await this.setObjectAsync(stateId, {
+						const keepCustom = ex.common && ex.common.custom;
+						await this.setObjectAsync(objectId, {
 							type: 'state',
-							common: keepCustom ? { ...common, custom: existing.common.custom } : common,
+							common: keepCustom ? { ...common, custom: ex.common.custom } : common,
 							native,
 						});
 					} else {
-						await this.extendObjectAsync(stateId, { type: 'state', common, native });
+						await this.extendObjectAsync(objectId, { type: 'state', common, native });
 					}
+
+					desiredIds.add(objectId);
+					this.pathToState[tagConfig.address || tagConfig.name] = objectId;
+					this.tagByObjectId[objectId] = tagConfig;
+					this.objectIdByName[tagConfig.name] = objectId;
 				}),
-			);
+			).catch(e => {
+				// a rejected DB op during shutdown must not become an unhandled rejection
+				if (!this.terminating) {
+					throw e;
+				}
+				this.log.debug(`object batch aborted (shutdown): ${e.message}`);
+			});
+			created += batch.length;
+			if (created >= nextMark || created >= tags.length) {
+				const pct = Math.round((created / tags.length) * 100);
+				this.log.info(`Building objects: ${created}/${tags.length} (${pct}%)`);
+				this.setState('info.buildProgress', pct, true);
+				nextMark = created + progressStep;
+			}
 		}
 
+		if (this.terminating) {
+			return;
+		}
+		await this.pruneStaleObjects(desiredIds, existing);
+		this.buildingObjects = false;
+		this.setState('info.buildProgress', 100, true);
 		this.log.info(`Created ${tags.length} ioBroker state objects`);
+	}
+
+	/**
+	 * Delete instance objects (states/channels/folders/devices) that are not part of
+	 * the current desired tree — clears the previous, invalid structure on upgrade so
+	 * only the valid tree remains. info.* and non-tree objects are always kept.
+	 *
+	 * @param desiredIds - Set of namespace-relative object ids that must survive
+	 * @param existing - snapshot of the current tree (namespace-relative id -> object)
+	 */
+	async pruneStaleObjects(desiredIds, existing) {
+		const all = existing || {};
+		const dels = [];
+		for (const id of Object.keys(all)) {
+			if (id === 'info' || id.startsWith('info.')) {
+				continue;
+			}
+			const type = all[id] && all[id].type;
+			if (type !== 'state' && type !== 'channel' && type !== 'folder' && type !== 'device') {
+				continue;
+			}
+			if (!desiredIds.has(id) && !this.terminating) {
+				dels.push(this.delObjectAsync(id).catch(() => {}));
+			}
+		}
+		if (dels.length) {
+			await Promise.all(dels).catch(() => {});
+			this.log.info(`Removed ${dels.length} stale object(s) from the previous structure`);
+		}
 	}
 
 	/**
@@ -350,7 +542,7 @@ class RockwellEthernetip extends utils.Adapter {
 		this.unsubscribeStates('*');
 		const tags = this.config.tags || [];
 		for (const tag of tags) {
-			this.subscribeStates(tag.name);
+			this.subscribeStates((this.objectIdByName && this.objectIdByName[tag.name]) || tag.name);
 		}
 		this.log.debug(`Subscribed to ${tags.length} configured states for write-back`);
 	}
@@ -383,13 +575,39 @@ class RockwellEthernetip extends utils.Adapter {
 	}
 
 	/**
+	 * Coerce an engine-supplied value to the state's declared ioBroker type so
+	 * js-controller does not reject it with a type warning — e.g. a USINT arrives
+	 * as the numeric string "65" for a number state.
+	 *
+	 * @param val - value from the engine change event
+	 * @param iobType - the state's ioBroker common.type
+	 * @returns {any} the value coerced to iobType where it is safe to do so
+	 */
+	coerceValue(val, iobType) {
+		if (val === null || val === undefined) {
+			return val;
+		}
+		if (iobType === 'number' && typeof val !== 'number') {
+			const n = Number(val);
+			return Number.isNaN(n) ? val : n;
+		}
+		if (iobType === 'boolean' && typeof val !== 'boolean') {
+			return val === true || val === 1 || val === '1' || val === 'true';
+		}
+		if (iobType === 'string' && typeof val !== 'string') {
+			return String(val);
+		}
+		return val;
+	}
+
+	/**
 	 * Is called if a subscribed state changes: ioBroker → PLC write through the engine.
 	 *
 	 * @param {string} id - State ID
 	 * @param {ioBroker.State | null | undefined} state - State object
 	 */
 	async onStateChange(id, state) {
-		if (!state || state.ack) {
+		if (!state || state.ack || this.buildingObjects || this.terminating) {
 			return;
 		}
 
@@ -398,7 +616,7 @@ class RockwellEthernetip extends utils.Adapter {
 			return;
 		}
 
-		const tagConfig = (this.config.tags || []).find(tag => tag.name === stateId);
+		const tagConfig = (this.tagByObjectId || {})[stateId];
 		if (!tagConfig || !this.engine) {
 			return;
 		}
@@ -461,6 +679,11 @@ class RockwellEthernetip extends utils.Adapter {
 				this.sendTo(obj.from, obj.command, payload, obj.callback);
 			}
 		};
+
+		// engine-dependent commands would race an in-progress (re)build — answer busy
+		if (this.buildingObjects && ['testConnection', 'browseController', 'getAlarms'].includes(obj.command)) {
+			return respond({ success: false, error: 'busy building objects' });
+		}
 
 		try {
 			switch (obj.command) {
@@ -552,16 +775,26 @@ class RockwellEthernetip extends utils.Adapter {
 				}
 				case 'testConnection': {
 					if (!this.engine) {
-						return respond({ success: false, error: 'engine not loaded' });
+						return respond({ success: false, connected: false, error: 'engine not loaded' });
 					}
-					const tags = this.config.tags || [];
-					if (tags.length === 0) {
-						const stats = JSON.parse(this.engine.getStats());
-						return respond({ success: !!stats.started, stats });
+					try {
+						let stats = {};
+						try {
+							stats = JSON.parse(this.engine.getStats());
+						} catch {
+							/* stats are best-effort */
+						}
+						// Report the engine's live connection state (mirrored into
+						// info.connection) rather than reading one arbitrary tag: the old
+						// blocking read could leave the message unanswered (button hangs),
+						// and a non-"Good" first tag reported "not connected" even while the
+						// PLC was online.
+						const conn = await this.getStateAsync('info.connection').catch(() => null);
+						const connected = !!(conn && conn.val);
+						return respond({ success: connected, connected, stats });
+					} catch (e) {
+						return respond({ success: false, connected: false, error: e.message });
 					}
-					const path = tags[0].address || tags[0].name;
-					const [read] = JSON.parse(this.engine.read(JSON.stringify([path])));
-					return respond({ success: read && read.quality === 'Good', read });
 				}
 				case 'reloadTags': {
 					respond({ success: true }); // reply first so the browser does not block
@@ -570,10 +803,6 @@ class RockwellEthernetip extends utils.Adapter {
 						return;
 					}
 					this.config.tags = tags;
-					this.pathToState = {};
-					for (const t of tags) {
-						this.pathToState[t.address || t.name] = t.name;
-					}
 					try {
 						await this.createStateObjects();
 						this.subscribeConfiguredStates();
@@ -690,6 +919,7 @@ class RockwellEthernetip extends utils.Adapter {
 	 * @param {() => void} callback - Callback function
 	 */
 	onUnload(callback) {
+		this.terminating = true;
 		try {
 			if (this.watchdog) {
 				this.clearInterval(this.watchdog);

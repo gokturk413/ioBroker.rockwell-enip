@@ -1,5 +1,5 @@
 {
-	"rockwell_ethernetip adapter settings": "Impostazioni dell'adattatore per rockwell_ethernetip",
+	"rockwell-enip adapter settings": "Impostazioni dell'adattatore per rockwell-enip",
 	"option1": "opzione1",
 	"option2": "opzione2",
 	"Driver Mode": "Driver Mode",
@@ -35,7 +35,7 @@
 	"Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.": "Vuoto = livello gratuito: tutte le funzioni, fino a 1000 tag, solo istanza 0. Una licenza aumenta il limite di tag e sblocca istanze aggiuntive.",
 	"Hidden AOI internal — excluded from group selection, tier defaults to none": "Interno AOI nascosto — escluso dalla selezione di gruppo, classe predefinita none",
 	"Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller": "I flag di variazione funzionano ovunque (incl. Logix Echo); il flusso TCP richiede un controller fisico",
-	"Change flags (polled — works on Logix Echo)": "Flag di variazione (in polling — funziona con Logix Echo)",
+	"Change flags (polled — any controller)": "Flag di variazione (in polling — qualsiasi controller)",
 	"TCP stream (Socket Object — physical PLC only)": "Flusso TCP (Socket Object — solo PLC fisico)",
 	"Export PLC push program (L5X)": "Esporta programma push del PLC (L5X)",
 	"Export failed": "Esportazione non riuscita",
@@ -69,5 +69,6 @@
 	"Parse File": "Analizza file",
 	"Parsing file": "Analisi del file",
 	"File parsed successfully": "File analizzato con successo",
-	"Error parsing file": "Errore durante l'analisi del file"
+	"Error parsing file": "Errore durante l'analisi del file",
+	"Building objects": "Creazione oggetti"
 }
