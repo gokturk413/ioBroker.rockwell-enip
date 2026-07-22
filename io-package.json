@@ -1,8 +1,21 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.0.17",
+		"version": "0.0.18",
 		"news": {
+			"0.0.18": {
+				"en": "Adapter title now matches its id 'rockwell-enip'; the Instructions tab now covers physical vs virtual-machine (VM) licensing.",
+				"de": "Der Adapter-Titel entspricht jetzt seiner ID 'rockwell-enip'; der Anleitungs-Tab behandelt nun die Lizenzierung für physische und virtuelle Maschinen (VM).",
+				"ru": "Заголовок адаптера теперь совпадает с его id 'rockwell-enip'; во вкладке инструкций описано лицензирование для физических и виртуальных машин (VM).",
+				"pt": "O título do adaptador agora corresponde ao seu id 'rockwell-enip'; o separador de instruções cobre agora o licenciamento para máquina física e virtual (VM).",
+				"nl": "De adaptertitel komt nu overeen met de id 'rockwell-enip'; het tabblad Instructies behandelt nu licenties voor fysieke en virtuele machines (VM).",
+				"fr": "Le titre de l'adaptateur correspond désormais à son id 'rockwell-enip' ; l'onglet Instructions couvre maintenant les licences pour machine physique et virtuelle (VM).",
+				"it": "Il titolo dell'adattatore ora corrisponde al suo id 'rockwell-enip'; la scheda Istruzioni ora descrive le licenze per macchina fisica e virtuale (VM).",
+				"es": "El título del adaptador ahora coincide con su id 'rockwell-enip'; la pestaña de Instrucciones ahora cubre las licencias para máquina física y virtual (VM).",
+				"pl": "Tytuł adaptera odpowiada teraz jego id 'rockwell-enip'; zakładka Instrukcje opisuje teraz licencjonowanie dla maszyny fizycznej i wirtualnej (VM).",
+				"uk": "Заголовок адаптера тепер збігається з його id 'rockwell-enip'; вкладка інструкцій тепер описує ліцензування для фізичної та віртуальної машини (VM).",
+				"zh-cn": "适配器标题现与其 id 'rockwell-enip' 一致；说明选项卡现涵盖物理机与虚拟机 (VM) 授权。"
+			},
 			"0.0.17": {
 				"en": "Maintenance: canonical repository metadata, CI and release on Node 24, and npm publishing with build provenance (supply-chain verification).",
 				"de": "Wartung: kanonische Repository-Metadaten, CI auf Node 24 und npm-Veröffentlichung mit Build-Provenance (Lieferketten-Verifizierung).",
@@ -31,17 +44,17 @@
 			}
 		},
 		"titleLang": {
-			"en": "ETHERNET_IP",
-			"de": "ETHERNET_IP",
-			"ru": "ЭТЕРНЕТ_IP",
-			"pt": "ETHERNET_IP",
-			"nl": "ETHERNET_IP",
-			"fr": "ETHERNET_IP",
-			"it": "ETHERNET_IP",
-			"es": "ETHERNET_IP",
-			"pl": "ETHERNET_IP",
-			"uk": "ETHERNET_IP",
-			"zh-cn": "以太网_IP"
+			"en": "rockwell-enip",
+			"de": "rockwell-enip",
+			"ru": "rockwell-enip",
+			"pt": "rockwell-enip",
+			"nl": "rockwell-enip",
+			"fr": "rockwell-enip",
+			"it": "rockwell-enip",
+			"es": "rockwell-enip",
+			"pl": "rockwell-enip",
+			"uk": "rockwell-enip",
+			"zh-cn": "rockwell-enip"
 		},
 		"desc": {
 			"en": "ioBroker adapter for Rockwell CompactLogix/ControlLogix PLCs via Ethernet/IP",

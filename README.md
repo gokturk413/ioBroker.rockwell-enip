@@ -63,7 +63,9 @@ idle instead of crashing.
 ## Licensing
 
 The **free tier** needs no key: all features, up to 1000 tags, adapter instance 0. Paid editions (Standard/Professional/Unlimited) raise the per-instance tag
-limit and the number of instances.
+limit and the number of instances. A license is issued for a **physical machine** or a
+**virtual machine (VM)**; running the adapter inside a VM requires a **separate, paid VM
+license**.
 
 A paid license is issued for the machine that runs the adapter, identified by its
 **Hardware ID**. Open the adapter settings → **Connection** tab → **Check License**
@@ -159,6 +161,11 @@ automatically on install — nothing to build for adapter users or contributors.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### 0.0.18 (2026-07-22)
+
+- (gokturk413) Adapter title now matches its id `rockwell-enip`
+- (gokturk413) Instructions tab now covers physical vs virtual-machine (VM) licensing
 
 ### 0.0.17 (2026-07-22)
 

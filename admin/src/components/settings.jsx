@@ -1878,8 +1878,10 @@ self.onmessage = function(e) {
 					<Code>0</Code> only — ideal for evaluation and small systems. Paid editions (the key is bound to the
 					machine and shared by its instances): <b>Standard</b> — instances <Code>0..1</Code>, up to 3000 tags
 					each; <b>Professional</b> — instances <Code>0..2</Code>, up to 10000 tags each; <b>Unlimited</b> —
-					unlimited instances and tags. Click <i>Check License</i> on the Connection tab to see this
-					machine&apos;s <b>Hardware ID</b> and send it with your order.
+					unlimited instances and tags. A license is issued for a <b>physical machine</b> or a{' '}
+					<b>virtual machine (VM)</b>; running the adapter inside a VM requires a VM license (priced
+					separately), so mention your setup when ordering. Click <i>Check License</i> on the Connection tab
+					to see this machine&apos;s <b>Hardware ID</b> and send it with your order.
 				</P>
 
 				<H>7. Troubleshooting</H>
