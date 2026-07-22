@@ -454,7 +454,7 @@ class RockwellEthernetip extends utils.Adapter {
 					}
 
 					const common = {
-						name: objectId.split('.').pop(),
+						name: objectId.split('.').pop() || objectId,
 						type: iobType,
 						role,
 						read: true,

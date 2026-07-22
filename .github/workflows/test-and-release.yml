@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: ioBroker/testing-action-check@v1
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           # Uncomment the following line if your adapter cannot be installed using 'npm ci'
           # install-command: 'npm install'
           lint: true
@@ -86,7 +86,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Check tag matches package version
@@ -95,14 +95,19 @@ jobs:
           tag="${GITHUB_REF_NAME#v}"
           [ "$pkg" = "$tag" ] || { echo "package.json is $pkg but the tag is $tag"; exit 1; }
 
-      - name: Pull engine binaries from the engine repo release
+      # A custom publish (not ioBroker/testing-action-deploy@v1) is required because
+      # the native engine binaries live in a separate private repo and must be pulled
+      # in before packing — the standard action cannot do that.
+      - name: Pull engine binaries from the engine repo's latest release
         env:
           GH_TOKEN: ${{ secrets.ENGINE_ASSETS_TOKEN }}
         run: |
-          ver="${GITHUB_REF_NAME#v}"
+          # Reuse the engine repo's latest published binaries, so a JS/admin-only
+          # release needs no native rebuild. Add a "v<x.y.z>" tag argument to
+          # gh release download to pin a specific engine build instead.
           for rid in win-x64 linux-x64 linux-arm64 osx-arm64 osx-x64; do
             mkdir -p "prebuilds/$rid"
-            gh release download "v$ver" --repo gokturk413/rockwell_ethernetip-engine \
+            gh release download --repo gokturk413/rockwell_ethernetip-engine \
               --pattern "rockwell_engine-$rid.node" --output "prebuilds/$rid/rockwell_engine.node"
             gzip -9 -f "prebuilds/$rid/rockwell_engine.node"
           done
