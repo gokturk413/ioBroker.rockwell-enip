@@ -1,8 +1,21 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.0.18",
+		"version": "0.0.19",
 		"news": {
+			"0.0.19": {
+				"en": "Push mode now covers arrays: an array element can be a watched instance (MyMotors[19].Val, Arr[i,j].Val) and arrays inside an instance resolve correctly. Instances sharing a type and selection share one word list, so large arrays cost little controller memory. Re-import the generated routine after changing the selection.",
+				"de": "Push-Modus unterstützt jetzt Arrays: Ein Array-Element kann eine überwachte Instanz sein (MyMotors[19].Val, Arr[i,j].Val), und Arrays innerhalb einer Instanz werden korrekt aufgelöst. Instanzen mit gleichem Typ und gleicher Auswahl teilen sich eine Wortliste, sodass große Arrays wenig Steuerungsspeicher kosten. Nach Auswahländerung die generierte Routine neu importieren.",
+				"ru": "Push-режим теперь охватывает массивы: элемент массива может быть отслеживаемым экземпляром (MyMotors[19].Val, Arr[i,j].Val), а массивы внутри экземпляра разрешаются корректно. Экземпляры с одним типом и выбором используют общий список слов, поэтому большие массивы почти не занимают память контроллера. После изменения выбора переимпортируйте сгенерированную процедуру.",
+				"pt": "O modo push passa a cobrir arrays: um elemento de array pode ser uma instância monitorizada (MyMotors[19].Val, Arr[i,j].Val) e os arrays dentro de uma instância são resolvidos corretamente. Instâncias com o mesmo tipo e seleção partilham uma lista de palavras, pelo que arrays grandes ocupam pouca memória do controlador. Reimporte a rotina gerada após alterar a seleção.",
+				"nl": "Push-modus ondersteunt nu arrays: een array-element kan een bewaakte instantie zijn (MyMotors[19].Val, Arr[i,j].Val) en arrays binnen een instantie worden correct opgelost. Instanties met hetzelfde type en dezelfde selectie delen één woordenlijst, dus grote arrays kosten weinig controllergeheugen. Importeer de gegenereerde routine opnieuw na een selectiewijziging.",
+				"fr": "Le mode push couvre désormais les tableaux : un élément de tableau peut être une instance surveillée (MyMotors[19].Val, Arr[i,j].Val) et les tableaux internes à une instance sont résolus correctement. Les instances de même type et même sélection partagent une liste de mots, donc les grands tableaux consomment peu de mémoire automate. Réimportez la routine générée après un changement de sélection.",
+				"it": "La modalità push ora copre gli array: un elemento di array può essere un'istanza monitorata (MyMotors[19].Val, Arr[i,j].Val) e gli array interni a un'istanza vengono risolti correttamente. Le istanze con stesso tipo e selezione condividono una word list, quindi array grandi occupano poca memoria del controllore. Reimportare la routine generata dopo aver cambiato la selezione.",
+				"es": "El modo push ya cubre arrays: un elemento de array puede ser una instancia vigilada (MyMotors[19].Val, Arr[i,j].Val) y los arrays dentro de una instancia se resuelven correctamente. Las instancias con el mismo tipo y selección comparten una lista de palabras, por lo que los arrays grandes ocupan poca memoria del controlador. Reimporte la rutina generada tras cambiar la selección.",
+				"pl": "Tryb push obejmuje teraz tablice: element tablicy może być monitorowaną instancją (MyMotors[19].Val, Arr[i,j].Val), a tablice wewnątrz instancji są poprawnie rozwiązywane. Instancje o tym samym typie i wyborze współdzielą jedną listę słów, więc duże tablice zajmują mało pamięci sterownika. Po zmianie wyboru zaimportuj ponownie wygenerowaną procedurę.",
+				"uk": "Режим push тепер охоплює масиви: елемент масиву може бути відстежуваним екземпляром (MyMotors[19].Val, Arr[i,j].Val), а масиви всередині екземпляра розв'язуються коректно. Екземпляри з однаковим типом і вибором використовують спільний список слів, тож великі масиви майже не займають пам'ять контролера. Після зміни вибору переімпортуйте згенеровану процедуру.",
+				"zh-cn": "推送模式现已支持数组：数组元素可作为被监视实例（MyMotors[19].Val、Arr[i,j].Val），实例内部的数组也能正确解析。类型与选择相同的实例共享一份字列表，因此大数组几乎不占用控制器内存。更改选择后请重新导入生成的例程。"
+			},
 			"0.0.18": {
 				"en": "Adapter title now matches its id 'rockwell-enip'; the Instructions tab now covers physical vs virtual-machine (VM) licensing.",
 				"de": "Der Adapter-Titel entspricht jetzt seiner ID 'rockwell-enip'; der Anleitungs-Tab behandelt nun die Lizenzierung für physische und virtuelle Maschinen (VM).",

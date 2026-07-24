@@ -121,6 +121,17 @@ Flow:
    engine falls back to polling automatically if the socket goes silent (>10 s) and
    resumes push on reconnect.
 
+Array instances are supported: `MyMotors[19].Sts_Running` and multi-dimensional
+`Arr[i,j].Val` each become their own watched instance, and arrays inside an
+instance (`MyPAI.Items[2].Val`) resolve to real offsets. Instances that share a
+type and member selection share one generated word list, so a large array costs
+little controller memory. Detection latency grows as `ceil(instances / 64) ×
+task period`, so a few hundred instances on a 100 ms task means under a second.
+
+After changing the tag selection — including adding array elements — export and
+re-import the generated `IOB_PushMap` routine. The `IOB_DirtyCheck` AOI does not
+change and does not need re-importing.
+
 Supported by every PlantPAx-5-capable controller (5580/5380/5480, EP/ERMP process
 variants) via the embedded Socket Object. v1 pushes BOOL/SINT/INT/DINT/REAL/LINT;
 STRING and `@Alarms`/`@AlarmSet` leaves stay on CIP polling. Writes (ioBroker→PLC)
@@ -161,6 +172,11 @@ automatically on install — nothing to build for adapter users or contributors.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### 0.0.19 (2026-07-22)
+
+- (gokturk413) Push mode covers arrays: array elements as watched instances (any dimensionality) and arrays inside an instance
+- (gokturk413) Instances sharing a type and member selection now share one generated word list
 
 ### 0.0.18 (2026-07-22)
 

@@ -1834,6 +1834,11 @@ self.onmessage = function(e) {
 					after every Studio download — no re-import needed unless you change WHICH instances are pushed.
 				</Step>
 				<P>
+					Array elements (<Code>MyMotors[19].Sts_Running</Code>, <Code>Arr[i,j].Val</Code>) and arrays inside
+					an instance (<Code>MyPAI.Items[2].Val</Code>) are pushable; re-import the generated routine after
+					changing the selection — the <Code>IOB_DirtyCheck</Code> AOI itself never changes.
+				</P>
+				<P>
 					Log shows <Code>push: N group(s) … tags watched</Code> at start and a <Code>push: ok/DOWN</Code>{' '}
 					health section in the periodic statistics line; set the instance log level to <i>debug</i> to see
 					every pushed value with a millisecond timestamp.
