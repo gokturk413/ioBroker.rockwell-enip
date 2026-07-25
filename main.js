@@ -183,19 +183,14 @@ class RockwellEthernetip extends utils.Adapter {
 				}
 			}
 		} else if (ev.type === 'connection') {
-			const connected = !!ev.connected;
-			this.setState('info.connection', connected, true);
-			// Stale-data signalling, the ioBroker equivalent of an OPC/KEPServer "Bad"
-			// quality: when the PLC link drops, every polled tag keeps its last value but
-			// gets a not-connected quality (0x42); when it comes back, quality returns to
-			// good (0). A dashboard or script can treat q !== 0 as "old data". Only fires
-			// on an actual connected↔disconnected transition.
-			if (this.plcConnected === true && !connected) {
-				this.setAllTagQuality(true);
-			} else if (this.plcConnected === false && connected) {
-				this.setAllTagQuality(false);
-			}
-			this.plcConnected = connected;
+			// Real PLC-link state from the engine's connectivity detector: false once
+			// the controller stops answering (~3 s of failed reads), true on the first
+			// good read. Tag values are handled separately on the 'changes' path — an
+			// unreadable tag is marked Bad and surfaces as a null value with
+			// not-connected quality (0x42), restored to its value + good quality on the
+			// next good read after reconnect. (Unlike OPC/KEPServer, which holds the last
+			// value with bad quality, we null it — the same "data is stale" signal.)
+			this.setState('info.connection', !!ev.connected, true);
 		} else if (ev.type === 'heartbeat') {
 			this.lastHeartbeat = Date.now();
 			// capacity diagnostics: how long each tier's poll pass really takes
@@ -516,56 +511,6 @@ class RockwellEthernetip extends utils.Adapter {
 		this.buildingObjects = false;
 		this.setState('info.buildProgress', 100, true);
 		this.log.info(`Created ${tags.length} ioBroker state objects`);
-	}
-
-	/**
-	 * Set the ioBroker quality flag on every polled tag state without changing its value,
-	 * on a PLC connection transition. 0x42 (not connected) when the link drops so old
-	 * values read as stale; 0 (good) when it returns. Reads all states once, then writes
-	 * only the ones whose quality actually differs, in batches so a large tree does not
-	 * flood the objects DB. Best-effort — never throws into the event loop.
-	 *
-	 * @param {boolean} stale true when the PLC link dropped (quality 0x42), false when it returned (quality 0)
-	 */
-	async setAllTagQuality(stale) {
-		try {
-			if (this.buildingObjects || this.terminating) {
-				return;
-			}
-			const ids = Object.keys(this.tagByObjectId || {});
-			if (!ids.length) {
-				return;
-			}
-			const targetQuality = stale ? 0x42 : 0;
-			const states = await this.getStatesAsync(`${this.namespace}.*`);
-			let changed = 0;
-			for (let i = 0; i < ids.length; i += 500) {
-				if (this.terminating) {
-					return;
-				}
-				await Promise.all(
-					ids.slice(i, i + 500).map(id => {
-						const s = states[`${this.namespace}.${id}`];
-						if (s && s.val !== null && s.val !== undefined && s.q !== targetQuality) {
-							changed++;
-							return this.setStateAsync(id, { val: s.val, ack: true, q: stale ? 0x42 : 0 }).catch(
-								() => {},
-							);
-						}
-						return null;
-					}),
-				);
-			}
-			if (changed) {
-				this.log.info(
-					stale
-						? `PLC disconnected — flagged ${changed} state(s) as stale (not-connected quality)`
-						: `PLC reconnected — restored good quality on ${changed} state(s)`,
-				);
-			}
-		} catch (e) {
-			this.log.warn(`setAllTagQuality(${stale ? 'stale' : 'good'}): ${e.message}`);
-		}
 	}
 
 	/**

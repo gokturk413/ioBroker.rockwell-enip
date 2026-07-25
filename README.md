@@ -173,6 +173,11 @@ automatically on install — nothing to build for adapter users or contributors.
 	### **WORK IN PROGRESS**
 -->
 
+### 0.0.21 (2026-07-25)
+
+- (gokturk413) `info.connection` now reflects the real PLC link: it turns off when the controller stops answering (~3 s of failed reads) and returns on the first successful read
+- (gokturk413) On a lost link each tag now reads `null` with a not-connected quality (0x42) and restores automatically on reconnect. Note: this changes the prior behaviour where a dropped link kept each tag's last value — dashboards/scripts that showed last-known values on an outage will now see `null`
+
 ### 0.0.20 (2026-07-24)
 
 - (gokturk413) Stale-data signalling: on a lost PLC connection, tag states keep their last value but get a not-connected quality (like an OPC/KEPServer Bad quality); quality returns to good on reconnect

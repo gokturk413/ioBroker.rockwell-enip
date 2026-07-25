@@ -1,8 +1,21 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.0.20",
+		"version": "0.0.21",
 		"news": {
+			"0.0.21": {
+				"en": "info.connection now reflects the real PLC link — it turns off when the controller stops answering and returns on the first successful read. While the link is down each tag reads null with a not-connected quality (0x42) instead of keeping its last value, and restores automatically on reconnect.",
+				"de": "info.connection spiegelt jetzt die tatsächliche SPS-Verbindung wider – sie schaltet ab, wenn die Steuerung nicht mehr antwortet, und kehrt beim ersten erfolgreichen Lesen zurück. Bei unterbrochener Verbindung liefert jeder Tag null mit einer Nicht-verbunden-Qualität (0x42), statt den letzten Wert zu behalten, und stellt sich bei Wiederverbindung automatisch wieder her.",
+				"ru": "info.connection теперь отражает реальную связь с ПЛК — выключается, когда контроллер перестаёт отвечать, и возвращается при первом успешном чтении. При потере связи каждый тег читается как null с качеством «не подключено» (0x42) вместо сохранения последнего значения и автоматически восстанавливается при переподключении.",
+				"pt": "info.connection agora reflete a ligação real ao PLC — desliga quando o controlador deixa de responder e volta na primeira leitura bem-sucedida. Com a ligação em baixo, cada tag lê null com uma qualidade não-ligado (0x42) em vez de manter o último valor, e restaura-se automaticamente ao reconectar.",
+				"nl": "info.connection weerspiegelt nu de echte PLC-verbinding — hij gaat uit als de controller niet meer antwoordt en keert terug bij de eerste geslaagde uitlezing. Bij een verbroken verbinding leest elke tag null met een niet-verbonden kwaliteit (0x42) in plaats van de laatste waarde te behouden, en herstelt automatisch bij herverbinding.",
+				"fr": "info.connection reflète désormais la liaison réelle avec l'automate — elle passe à off lorsque l'automate cesse de répondre et revient à la première lecture réussie. Liaison coupée, chaque tag renvoie null avec une qualité non-connecté (0x42) au lieu de conserver sa dernière valeur, et se rétablit automatiquement à la reconnexion.",
+				"it": "info.connection ora riflette il collegamento reale al PLC — si spegne quando il controllore smette di rispondere e ritorna alla prima lettura riuscita. Con il collegamento interrotto, ogni tag legge null con una qualità non-connesso (0x42) invece di mantenere l'ultimo valore, e si ripristina automaticamente alla riconnessione.",
+				"es": "info.connection ahora refleja el enlace real con el PLC — se apaga cuando el controlador deja de responder y vuelve en la primera lectura correcta. Con el enlace caído, cada tag lee null con una calidad no-conectado (0x42) en lugar de mantener su último valor, y se restaura automáticamente al reconectar.",
+				"pl": "info.connection odzwierciedla teraz rzeczywiste połączenie z PLC — wyłącza się, gdy sterownik przestaje odpowiadać, i wraca przy pierwszym udanym odczycie. Przy zerwanym połączeniu każdy tag odczytuje null z jakością „niepołączony” (0x42) zamiast zachowywać ostatnią wartość i przywraca się automatycznie po ponownym połączeniu.",
+				"uk": "info.connection тепер відображає реальний зв'язок з ПЛК — вимикається, коли контролер перестає відповідати, і повертається при першому успішному читанні. При втраті зв'язку кожен тег читається як null з якістю «не підключено» (0x42) замість збереження останнього значення й автоматично відновлюється при повторному підключенні.",
+				"zh-cn": "info.connection 现在反映真实的 PLC 连接——当控制器停止响应时关闭，在首次成功读取时恢复。连接中断时，每个标签读取为 null 并标记为未连接质量（0x42），而不是保留最后的值，重新连接后自动恢复。"
+			},
 			"0.0.20": {
 				"en": "Stale-data signalling: when the PLC connection drops, tag states keep their last value but get a not-connected quality (the ioBroker equivalent of an OPC/KEPServer Bad quality); quality returns to good on reconnect, so dashboards can tell live data from old.",
 				"de": "Kennzeichnung veralteter Daten: Bei Verbindungsverlust behalten Tag-Zustände ihren letzten Wert, erhalten aber eine Nicht-verbunden-Qualität (das ioBroker-Äquivalent zur OPC/KEPServer-Schlecht-Qualität); bei Wiederverbindung wird die Qualität wieder gut.",
