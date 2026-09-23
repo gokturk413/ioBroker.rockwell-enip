@@ -90,6 +90,7 @@ re-issued without a new purchase.
 | `parallelConnections` | `1`             | parallel CIP sessions (2–4 multiply read throughput on L8x)               |
 | `pushMode`            | `false`         | change-driven push over TCP (needs the generated PLC program)             |
 | `pushPort`            | `44819`         | TCP port the engine listens on for the push agent                         |
+| `pushAllowedIps`      | empty           | extra addresses allowed to push besides the PLC (NAT, other module)       |
 | `connectionTimeout`   | `5000`          | PLC request timeout, ms                                                   |
 | `tags[]`              | `[]`            | `{name, address?, type, tier?, write, unit}`                              |
 
@@ -172,6 +173,13 @@ automatically on install — nothing to build for adapter users or contributors.
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### 0.0.22 (2026-09-23)
+
+- (gokturk413) A tag that fails on its own while the PLC link is up now reads `null` with quality 0x44 (device reports error) instead of 0x42, so a single bad tag can be told apart from a lost link (still 0x42)
+- (gokturk413) Socket push now accepts connections only from the configured PLC address; a connection from any other address is refused and logged once. Behind NAT, or when the push agent runs on a different module than the configured address, add that address under "Additional push source IPs" — the log names the refused address
+- (gokturk413) Fixed: a database error while building the object tree could leave writes and push permanently blocked until restart
+- (gokturk413) Fixed: after a slow system start a valid license could be rejected until the adapter was restarted
 
 ### 0.0.21 (2026-07-25)
 

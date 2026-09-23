@@ -27,6 +27,8 @@
 	"More CIP connections multiply read throughput (4 is a good maximum for L8x)": "Більше CIP-з'єднань множать швидкість читання (4 — розумний максимум для L8x)",
 	"PLC push mode (change-driven, needs the generated program)": "Режим push ПЛК (за змінами, потребує згенерованої програми)",
 	"Push port": "Порт push",
+	"Additional push source IPs": "Додаткові IP-адреси джерел push",
+	"Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module": "Push дозволено лише з адреси ПЛК. Додайте інші адреси (через кому), якщо ПЛК знаходиться за NAT або надсилає push з іншого модуля",
 	"Push transport": "Транспорт push",
 	"Set tier for all tags in this group": "Встановити клас опитування всім тегам групи",
 	"mixed": "змішано",

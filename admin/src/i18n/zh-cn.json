@@ -27,6 +27,8 @@
 	"More CIP connections multiply read throughput (4 is a good maximum for L8x)": "更多 CIP 连接可成倍提升读取吞吐量（L8x 建议最多 4 个）",
 	"PLC push mode (change-driven, needs the generated program)": "PLC 推送模式（变化驱动，需要生成的程序）",
 	"Push port": "推送端口",
+	"Additional push source IPs": "其他推送来源 IP",
+	"Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module": "仅允许 PLC 地址推送。如果 PLC 位于 NAT 之后或从其他模块推送，请添加其他地址（以逗号分隔）",
 	"Push transport": "推送传输",
 	"Set tier for all tags in this group": "为该组的所有标签设置扫描类别",
 	"mixed": "混合",

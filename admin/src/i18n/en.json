@@ -11,6 +11,8 @@
 	"More CIP connections multiply read throughput (4 is a good maximum for L8x)": "More CIP connections multiply read throughput (4 is a good maximum for L8x)",
 	"PLC push mode (change-driven, needs the generated program)": "PLC push mode (change-driven, needs the generated program)",
 	"Push port": "Push port",
+	"Additional push source IPs": "Additional push source IPs",
+	"Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module": "Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module",
 	"Push transport": "Push transport",
 	"Set tier for all tags in this group": "Set tier for all tags in this group",
 	"mixed": "mixed",

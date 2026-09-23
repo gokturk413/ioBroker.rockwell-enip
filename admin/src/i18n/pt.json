@@ -27,6 +27,8 @@
 	"More CIP connections multiply read throughput (4 is a good maximum for L8x)": "Mais conexões CIP multiplicam o débito de leitura (4 é um bom máximo para L8x)",
 	"PLC push mode (change-driven, needs the generated program)": "Modo push do PLC (por alterações, requer o programa gerado)",
 	"Push port": "Porta push",
+	"Additional push source IPs": "IPs de origem push adicionais",
+	"Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module": "Apenas o endereço do PLC pode fazer push. Adicione outros endereços (separados por vírgula) se o PLC estiver atrás de NAT ou fizer push a partir de outro módulo",
 	"Push transport": "Transporte push",
 	"Set tier for all tags in this group": "Definir classe de varrimento para todas as tags do grupo",
 	"mixed": "misto",

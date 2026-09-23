@@ -2073,6 +2073,20 @@ self.onmessage = function(e) {
 							/>
 						)}
 
+						{(native.pushTransport || 'poll') === 'socket' && (
+							<TextField
+								label={I18n.t('Additional push source IPs')}
+								className={classes.input}
+								value={native.pushAllowedIps || ''}
+								onChange={e => this.props.onChange('pushAllowedIps', e.target.value)}
+								margin="normal"
+								fullWidth
+								helperText={I18n.t(
+									'Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module',
+								)}
+							/>
+						)}
+
 						<Button
 							variant="contained"
 							className={classes.button}

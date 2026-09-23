@@ -27,6 +27,8 @@
 	"More CIP connections multiply read throughput (4 is a good maximum for L8x)": "Meer CIP-verbindingen vermenigvuldigen de leesdoorvoer (4 is een goed maximum voor L8x)",
 	"PLC push mode (change-driven, needs the generated program)": "PLC-pushmodus (op wijziging, vereist het gegenereerde programma)",
 	"Push port": "Push-poort",
+	"Additional push source IPs": "Extra push-bron-IP's",
+	"Only the PLC address may push. Add other addresses (comma separated) if the PLC is behind NAT or pushes from another module": "Alleen het PLC-adres mag pushen. Voeg andere adressen toe (kommagescheiden) als de PLC achter NAT zit of vanaf een andere module pusht",
 	"Push transport": "Push-transport",
 	"Set tier for all tags in this group": "Scanklasse instellen voor alle tags in deze groep",
 	"mixed": "gemengd",

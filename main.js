@@ -11,6 +11,7 @@ const fs = require('node:fs');
 const utils = require('@iobroker/adapter-core');
 const { load } = require('./lib/engineBridge');
 const { resolveProjectFile, writeProjectChunk } = require('./lib/projectFile');
+const { qualityFor } = require('./lib/quality');
 
 const HEARTBEAT_TIMEOUT_MS = 30000;
 const WATCHDOG_INTERVAL_MS = 10000;
@@ -67,6 +68,7 @@ class RockwellEthernetip extends utils.Adapter {
 			pushMode: !!c.pushMode,
 			pushTransport: c.pushTransport || 'poll',
 			pushPort: c.pushPort || 44819,
+			pushAllowedIps: c.pushAllowedIps || '',
 			timeoutMs: c.connectionTimeout || 5000,
 			pollTiers: c.pollTiers || { normalMs: c.pollInterval || 1000 },
 			tags,
@@ -177,7 +179,9 @@ class RockwellEthernetip extends utils.Adapter {
 				if (stateId) {
 					const tag = this.tagByObjectId[stateId];
 					const val = tag ? this.coerceValue(c.Value, this.getStateType(tag.type)) : c.Value;
-					this.setState(stateId, { val, ack: true, q: c.Quality === 'Good' ? 0 : 0x42 }).catch(e =>
+					// quality bits come from lib/quality.js; c.Status carries the raw libplctag
+					// code when there is one
+					this.setState(stateId, { val, ack: true, q: qualityFor(c) }).catch(e =>
 						this.log.warn(`setState ${stateId}: ${e.message}`),
 					);
 				}
@@ -186,10 +190,11 @@ class RockwellEthernetip extends utils.Adapter {
 			// Real PLC-link state from the engine's connectivity detector: false once
 			// the controller stops answering (~3 s of failed reads), true on the first
 			// good read. Tag values are handled separately on the 'changes' path — an
-			// unreadable tag is marked Bad and surfaces as a null value with
-			// not-connected quality (0x42), restored to its value + good quality on the
-			// next good read after reconnect. (Unlike OPC/KEPServer, which holds the last
-			// value with bad quality, we null it — the same "data is stale" signal.)
+			// unreadable tag is marked Bad and surfaces as a null value with 0x42 when the
+			// link dropped or 0x44 when only that tag failed, restored to its value + good
+			// quality on the next good read after reconnect. (Unlike OPC/KEPServer, which
+			// holds the last value with bad quality, we null it — the same "data is stale"
+			// signal.)
 			this.setState('info.connection', !!ev.connected, true);
 		} else if (ev.type === 'heartbeat') {
 			this.lastHeartbeat = Date.now();
@@ -333,8 +338,19 @@ class RockwellEthernetip extends utils.Adapter {
 	 * path, so `pathToState` bridges path -> object id.
 	 */
 	async createStateObjects() {
-		const tags = this.config.tags || [];
 		this.buildingObjects = true; // gate writes/push/engine commands until the tree is ready
+		try {
+			await this.buildStateObjects();
+		} finally {
+			// on every exit: a DB error mid-build used to leave the gate shut, silently
+			// dropping all writes, pushes and engine commands until the next restart
+			this.buildingObjects = false;
+		}
+	}
+
+	/** Body of createStateObjects — call that instead, it owns the buildingObjects gate. */
+	async buildStateObjects() {
+		const tags = this.config.tags || [];
 
 		// progress state so the admin (and any dashboard) can show how far the build is
 		await this.setObjectNotExistsAsync('info.buildProgress', {
@@ -377,7 +393,6 @@ class RockwellEthernetip extends utils.Adapter {
 		if (tags.length === 0) {
 			this.log.info('No tags configured yet');
 			await this.pruneStaleObjects(new Set(), existing); // drop a tree left by a previous config
-			this.buildingObjects = false;
 			return;
 		}
 
@@ -508,7 +523,6 @@ class RockwellEthernetip extends utils.Adapter {
 			return;
 		}
 		await this.pruneStaleObjects(desiredIds, existing);
-		this.buildingObjects = false;
 		this.setState('info.buildProgress', 100, true);
 		this.log.info(`Created ${tags.length} ioBroker state objects`);
 	}
