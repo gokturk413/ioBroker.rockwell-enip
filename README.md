@@ -174,6 +174,10 @@ automatically on install — nothing to build for adapter users or contributors.
 	### **WORK IN PROGRESS**
 -->
 
+### 0.0.23 (2026-09-25)
+
+- (gokturk413) Fixed: a valid PC license was rejected as "virtual machine detected" on a physical PC with WSL2, Hyper-V, Docker Desktop or VMware Workstation installed — their virtual host network adapters (00:15:5D, 00:50:56 …) were taken as proof of a VM. The MAC check now counts only when every real adapter is virtual; DMI and CPUID detection are unchanged
+
 ### 0.0.22 (2026-09-23)
 
 - (gokturk413) A tag that fails on its own while the PLC link is up now reads `null` with quality 0x44 (device reports error) instead of 0x42, so a single bad tag can be told apart from a lost link (still 0x42)

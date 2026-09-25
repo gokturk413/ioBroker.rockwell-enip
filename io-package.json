@@ -1,8 +1,21 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.0.22",
+		"version": "0.0.23",
 		"news": {
+			"0.0.23": {
+				"en": "Fixed: a valid PC license was rejected as \"virtual machine detected\" on a physical PC that has WSL2, Hyper-V, Docker Desktop or VMware Workstation installed. Their virtual host network adapters no longer count as proof of a virtual machine.",
+				"de": "Behoben: Eine gültige PC-Lizenz wurde auf einem physischen PC mit installiertem WSL2, Hyper-V, Docker Desktop oder VMware Workstation als „virtuelle Maschine erkannt“ abgelehnt. Deren virtuelle Host-Netzwerkadapter gelten nicht mehr als Nachweis einer virtuellen Maschine.",
+				"ru": "Исправлено: действующая PC-лицензия отклонялась с сообщением «обнаружена виртуальная машина» на физическом ПК с установленными WSL2, Hyper-V, Docker Desktop или VMware Workstation. Их виртуальные сетевые адаптеры хоста больше не считаются признаком виртуальной машины.",
+				"pt": "Corrigido: uma licença PC válida era rejeitada como «máquina virtual detetada» num PC físico com WSL2, Hyper-V, Docker Desktop ou VMware Workstation instalados. Os seus adaptadores de rede virtuais do anfitrião já não contam como prova de uma máquina virtual.",
+				"nl": "Opgelost: een geldige pc-licentie werd als 'virtuele machine gedetecteerd' geweigerd op een fysieke pc met WSL2, Hyper-V, Docker Desktop of VMware Workstation. Hun virtuele host-netwerkadapters gelden niet langer als bewijs van een virtuele machine.",
+				"fr": "Corrigé : une licence PC valide était refusée comme « machine virtuelle détectée » sur un PC physique où WSL2, Hyper-V, Docker Desktop ou VMware Workstation est installé. Leurs cartes réseau virtuelles de l'hôte ne comptent plus comme preuve d'une machine virtuelle.",
+				"it": "Corretto: una licenza PC valida veniva rifiutata come «macchina virtuale rilevata» su un PC fisico con WSL2, Hyper-V, Docker Desktop o VMware Workstation installati. Le loro schede di rete virtuali dell'host non contano più come prova di una macchina virtuale.",
+				"es": "Corregido: una licencia PC válida se rechazaba como «máquina virtual detectada» en un PC físico con WSL2, Hyper-V, Docker Desktop o VMware Workstation instalados. Sus adaptadores de red virtuales del host ya no cuentan como prueba de una máquina virtual.",
+				"pl": "Naprawiono: ważna licencja PC była odrzucana jako „wykryto maszynę wirtualną” na fizycznym komputerze z zainstalowanym WSL2, Hyper-V, Docker Desktop lub VMware Workstation. Ich wirtualne karty sieciowe hosta nie są już traktowane jako dowód maszyny wirtualnej.",
+				"uk": "Виправлено: чинна PC-ліцензія відхилялася з повідомленням «виявлено віртуальну машину» на фізичному ПК із встановленими WSL2, Hyper-V, Docker Desktop або VMware Workstation. Їхні віртуальні мережеві адаптери хоста більше не вважаються ознакою віртуальної машини.",
+				"zh-cn": "修复：在安装了 WSL2、Hyper-V、Docker Desktop 或 VMware Workstation 的物理 PC 上，有效的 PC 许可证会被误判为“检测到虚拟机”而被拒绝。这些软件创建的主机虚拟网卡不再被视为虚拟机的证据。"
+			},
 			"0.0.22": {
 				"en": "A tag that fails on its own while the PLC link is up now gets quality 0x44 (device reports error), so it can be told apart from a lost link (0x42). Socket push now accepts connections only from the PLC address, plus the new 'Additional push source IPs' setting for NAT or another module. Fixed: a database error during the object build could block writes and push until restart; a valid license could be rejected after a slow system start.",
 				"de": "Ein Tag, der bei bestehender SPS-Verbindung einzeln fehlschlägt, erhält jetzt die Qualität 0x44 (Gerät meldet Fehler) und ist so von einer verlorenen Verbindung (0x42) unterscheidbar. Socket-Push nimmt Verbindungen nur noch von der SPS-Adresse an, dazu die neue Einstellung „Zusätzliche Push-Quell-IPs“ für NAT oder ein anderes Modul. Behoben: Ein Datenbankfehler beim Objektaufbau konnte Schreibzugriffe und Push bis zum Neustart blockieren; eine gültige Lizenz konnte nach einem langsamen Systemstart abgelehnt werden.",
