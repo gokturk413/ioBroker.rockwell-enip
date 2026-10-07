@@ -45,9 +45,8 @@ personnel can access the ioBroker host.
 ## Requirements
 
 - One of the supported platforms below.
-- A license is optional: a built-in **free tier** runs all features on adapter
-  instance 0 with up to 1000 tags. Paid editions raise the tag limit and unlock
-  additional instances — see [Licensing](#licensing).
+- A license key. Without one, a **14-day trial** runs every feature; after it the
+  engine stops until a key is entered — see [Licensing](#licensing).
 
 ## Installation & platform binaries
 
@@ -62,10 +61,15 @@ idle instead of crashing.
 
 ## Licensing
 
-The **free tier** needs no key: all features, up to 1000 tags, adapter instance 0. Paid editions (Standard/Professional/Unlimited) raise the per-instance tag
-limit and the number of instances. A license is issued for a **physical machine** or a
-**virtual machine (VM)**; running the adapter inside a VM requires a **separate, paid VM
-license**.
+Without a key the adapter runs a **14-day trial** with every feature on any instance;
+after it the engine stops until a licence key is entered (there is no free tier).
+Editions (Standard/Professional/Unlimited) set the per-instance tag limit and the
+number of instances. A license is issued for a **physical machine** or a
+**virtual machine (VM)**; a physical-PC license does not run inside a VM or a
+container (the engine stops) — that needs a **separate, paid VM license**.
+A key that does not fit the machine (copied to another one, or a board changed)
+runs 14 days of grace and then stops; ask for a new key within that time.
+The key field also accepts the whole activation response file.
 
 A paid license is issued for the machine that runs the adapter, identified by its
 **Hardware ID**. Open the adapter settings → **Connection** tab → **Check License**
@@ -174,6 +178,10 @@ automatically on install — nothing to build for adapter users or contributors.
 	### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+
+- (gokturk413) Licensing moves to the shared SCADA licence core (RFC-005): no free tier any more — without a key a 14-day trial with every feature, then the engine stops; a physical-PC key stops at once inside a VM or container; a key that does not fit the machine stops after 14 days of grace; an expired paid key keeps the runtime and blocks engineering. Existing keys keep working. The key field also accepts an activation response file.
+
 ### 0.0.23 (2026-09-25)
 
 - (gokturk413) Fixed: a valid PC license was rejected as "virtual machine detected" on a physical PC with WSL2, Hyper-V, Docker Desktop or VMware Workstation installed — their virtual host network adapters (00:15:5D, 00:50:56 …) were taken as proof of a VM. The MAC check now counts only when every real adapter is virtual; DMI and CPUID detection are unchanged
@@ -278,8 +286,9 @@ Copyright (c) 2026 gokturk413 <gokturk413@gmail.com>
 Licensed under **Creative Commons Attribution-NonCommercial 4.0 International
 (CC BY-NC 4.0)** — see [LICENSE](LICENSE).
 
-- **Non-commercial use** is free of charge (the adapter additionally ships a
-  built-in free tier: all features, up to 1000 tags, adapter instance 0).
+- **Non-commercial use** is free of charge: ask
+  [gokturk413](https://github.com/gokturk413) for a non-commercial key (the
+  built-in 14-day trial stops the engine without one).
 - **Commercial use requires a per-machine license key** — see
   [Licensing](#licensing); contact [gokturk413](https://github.com/gokturk413).
 

@@ -34,7 +34,7 @@
 	"mixed": "misto",
 	"internal": "interno",
 	"Instructions": "Istruzioni",
-	"Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.": "Vuoto = livello gratuito: tutte le funzioni, fino a 1000 tag, solo istanza 0. Una licenza aumenta il limite di tag e sblocca istanze aggiuntive.",
+	"Empty = a 14-day trial with every feature; after it the engine stops until a key is entered. Paste the licence key or the whole activation response file.": "Empty = a 14-day trial with every feature; after it the engine stops until a key is entered. Paste the licence key or the whole activation response file.",
 	"Hidden AOI internal — excluded from group selection, tier defaults to none": "Interno AOI nascosto — escluso dalla selezione di gruppo, classe predefinita none",
 	"Change flags work everywhere (incl. Logix Echo); TCP stream needs a physical controller": "I flag di variazione funzionano ovunque (incl. Logix Echo); il flusso TCP richiede un controller fisico",
 	"Change flags (polled — any controller)": "Flag di variazione (in polling — qualsiasi controller)",

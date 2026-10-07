@@ -1879,13 +1879,15 @@ self.onmessage = function(e) {
 
 				<H>6. Licensing</H>
 				<P>
-					<b>Free tier</b> (no key): all features including push, up to <b>1000</b> tags, adapter instance{' '}
-					<Code>0</Code> only — ideal for evaluation and small systems. Paid editions (the key is bound to the
+					<b>Trial</b> (no key): 14 days with every feature, including push, on any instance; after it the
+					engine stops until a licence key is entered (there is no free tier). Paid editions (the key is bound to the
 					machine and shared by its instances): <b>Standard</b> — instances <Code>0..1</Code>, up to 3000 tags
 					each; <b>Professional</b> — instances <Code>0..2</Code>, up to 10000 tags each; <b>Unlimited</b> —
 					unlimited instances and tags. A license is issued for a <b>physical machine</b> or a{' '}
 					<b>virtual machine (VM)</b>; running the adapter inside a VM requires a VM license (priced
-					separately), so mention your setup when ordering. Click <i>Check License</i> on the Connection tab
+					separately) — a physical-PC license does not run in a VM. A key that does not fit the machine (copied
+					to another one, or a board changed) runs 14 days of grace, then stops; ask for a new key in that
+					time. Mention your setup when ordering. Click <i>Check License</i> on the Connection tab
 					to see this machine&apos;s <b>Hardware ID</b> and send it with your order.
 				</P>
 
@@ -2114,7 +2116,7 @@ self.onmessage = function(e) {
 							margin="normal"
 							fullWidth
 							helperText={I18n.t(
-								'Empty = free tier: all features, up to 1000 tags, adapter instance 0 only. A license raises the tag limit and unlocks additional instances.',
+								'Empty = a 14-day trial with every feature; after it the engine stops until a key is entered. Paste the licence key or the whole activation response file.',
 							)}
 							multiline
 							rows={2}

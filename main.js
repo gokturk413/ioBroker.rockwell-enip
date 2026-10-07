@@ -37,6 +37,10 @@ class RockwellEthernetip extends utils.Adapter {
 		this.terminating = false; // set on unload so long object builds abort cleanly
 		this.buildingObjects = false; // true while (re)building the tree — gates writes/push/commands
 		this.licenseValid = false;
+		/** true while the licence lets the engine run I/O (valid, trial, grace, restricted) */
+		this.licenceRunning = false;
+		/** the adapter's copy of the licence ledger (RFC-005 §5.2), passed back to the engine */
+		this.licenceLedger = '';
 		this.lastHeartbeat = 0;
 		this.watchdog = null;
 	}
@@ -60,6 +64,7 @@ class RockwellEthernetip extends utils.Adapter {
 			gateway: c.plcHost,
 			path: `1,${c.plcSlot || 0}`,
 			licenseKey: c.licenseKey || '',
+			licenceLedger: this.licenceLedger || '',
 			mode: c.mode || 'standard',
 			projectFile: c.projectFile || '',
 			cipPayload: c.cipPayload || 0,
@@ -101,6 +106,7 @@ class RockwellEthernetip extends utils.Adapter {
 			`Starting engine for PLC at ${this.config.plcHost}, Slot ${this.config.plcSlot} (engine ${this.engine.version()})`,
 		);
 		this.engine.onEvent(json => this.onEngineEvent(json));
+		this.licenceLedger = await this.readLicenceLedger();
 		this.engine.init(JSON.stringify(this.engineConfig()));
 		this.engine.start();
 		const pollCount = (this.config.tags || []).filter(t => (t.type || '').toUpperCase() !== 'EP').length;
@@ -113,7 +119,7 @@ class RockwellEthernetip extends utils.Adapter {
 
 		this.lastHeartbeat = Date.now();
 		this.watchdog = this.setInterval(() => {
-			if (!this.licenseValid) {
+			if (!this.licenceRunning) {
 				return;
 			} // engine refused to start — nothing to restart
 			if (Date.now() - this.lastHeartbeat > HEARTBEAT_TIMEOUT_MS) {
@@ -219,16 +225,52 @@ class RockwellEthernetip extends utils.Adapter {
 			const level = ev.level === 'error' ? 'error' : ev.level === 'info' ? 'info' : 'warn';
 			this.log[level](`engine: ${ev.message}`);
 		} else if (ev.type === 'license') {
+			// RFC-005 L5: the engine's scada-core state machine decides; there is no free tier
 			this.licenseValid = !!ev.valid;
-			if (ev.valid) {
-				this.log.info(`License: ${ev.message}`);
-			} else if (ev.freeEligible) {
-				// no key, but within the free envelope (instance 0, tag limit) — not an error
-				this.log.info(`License: free tier active — ${ev.message}`);
+			this.licenceRunning = !ev.stopsIo;
+			if (typeof ev.ledger === 'string' && ev.ledger && ev.ledger !== this.licenceLedger) {
+				this.licenceLedger = ev.ledger;
+				this.writeLicenceLedger(ev.ledger).catch(e => this.log.warn(`licence ledger not saved: ${e.message}`));
+			}
+			const line = `License: ${ev.state}${ev.daysLeft > 0 ? ` (${ev.daysLeft} day(s) left)` : ''} — ${ev.message}`;
+			if (ev.stopsIo) {
+				this.log.error(
+					`${line} — the engine does not run until a valid licence key is entered. Hardware ID: ${ev.hardwareId}`,
+				);
+			} else if (ev.state === 'grace' || ev.blocksEngineering) {
+				this.log.warn(line);
 			} else {
-				this.log.error(`License: ${ev.message}`);
+				this.log.info(ev.state === 'trial' ? `${line}. Hardware ID: ${ev.hardwareId}` : line);
 			}
 		}
+	}
+
+	/**
+	 * The adapter's copy of the licence ledger (RFC-005 §5.2). The engine also keeps
+	 * the host copy; together they make sure deleting one never restarts a trial.
+	 *
+	 * @returns the sealed ledger, or '' when there is none
+	 */
+	async readLicenceLedger() {
+		try {
+			const o = await this.getObjectAsync('licenceLedger');
+			return (o && o.native && typeof o.native.blob === 'string' && o.native.blob) || '';
+		} catch {
+			return '';
+		}
+	}
+
+	/**
+	 * Stores the adapter's copy of the licence ledger.
+	 *
+	 * @param blob - the sealed ledger the engine emitted
+	 */
+	async writeLicenceLedger(blob) {
+		await this.setObjectAsync('licenceLedger', {
+			type: 'meta',
+			common: { name: 'licence ledger (RFC-005)', type: 'meta' },
+			native: { blob },
+		});
 	}
 
 	/**
