@@ -178,7 +178,7 @@ automatically on install — nothing to build for adapter users or contributors.
 	### **WORK IN PROGRESS**
 -->
 
-### **WORK IN PROGRESS**
+### 0.1.0 (2026-10-07)
 
 - (gokturk413) Licensing moves to the shared SCADA licence core (RFC-005): no free tier any more — without a key a 14-day trial with every feature, then the engine stops; a physical-PC key stops at once inside a VM or container; a key that does not fit the machine stops after 14 days of grace; an expired paid key keeps the runtime and blocks engineering. Existing keys keep working. The key field also accepts an activation response file.
 
