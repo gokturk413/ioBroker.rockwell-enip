@@ -1,8 +1,21 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.2.0",
+		"version": "0.2.1",
 		"news": {
+			"0.2.1": {
+				"en": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"de": "Behoben: unter Linux ließ sich die Engine in Debian-12-Containern nicht laden (glibc 2.38 nötig) und konnte beim Lesen der Hardware-ID in node abstürzen (OpenSSL-Konflikt). Sie wird jetzt für glibc 2.35 gebaut und vor jeder Veröffentlichung in einem Debian-12-Container geprüft.",
+				"ru": "Исправлено: в Linux движок не загружался в контейнерах Debian 12 (требовалась glibc 2.38) и мог аварийно завершаться при чтении аппаратного идентификатора внутри node (конфликт OpenSSL). Теперь он собирается для glibc 2.35 и перед каждым выпуском проверяется в контейнере Debian 12.",
+				"pt": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"nl": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"fr": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"it": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"es": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"pl": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"uk": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release.",
+				"zh-cn": "Fixed: on Linux the engine did not load in Debian 12 containers (it needed glibc 2.38) and could crash when it read the hardware id inside node (OpenSSL conflict). It is now built for glibc 2.35 and checked in a Debian 12 container before every release."
+			},
 			"0.2.0": {
 				"en": "Licensing: a key for a virtual machine records the VM generation id, so a cloned, imported or reverted VM gets 14 days of grace and then stops; a VM key that lists hosts runs only on those Hyper-V hosts. A VM or container that shows no hardware id (only its hostname) cannot hold a key: mount the host's /etc/machine-id into the container. The activation request carries the VM host.",
 				"de": "Lizenzierung: ein Schlüssel für eine virtuelle Maschine speichert die VM-Generations-ID; eine geklonte, importierte oder zurückgesetzte VM erhält 14 Tage Kulanz und stoppt dann. Ein VM-Schlüssel mit Host-Liste läuft nur auf diesen Hyper-V-Hosts. Eine VM oder ein Container ohne Hardware-ID (nur Hostname) kann keinen Schlüssel tragen: /etc/machine-id des Hosts in den Container einbinden. Die Aktivierungsanfrage enthält den VM-Host.",
