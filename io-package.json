@@ -1,9 +1,9 @@
 {
 	"common": {
 		"name": "rockwell-enip",
-		"version": "0.2.2",
+		"version": "0.2.3",
 		"news": {
-			"0.2.2": {
+			"0.2.3": {
 				"en": "Fixed: on a redundancy failover the instance moves to the other host and the licence showed \"tampered\" there (and again back on the first host), because one copy of the licence ledger was shared by both hosts. Every host now keeps its own copy. The engine reports its own version; a Linux service without HOSTNAME uses the kernel hostname for its hardware id.",
 				"de": "Behoben: bei einem Redundanz-Failover wechselt die Instanz auf den anderen Host, und die Lizenz zeigte dort \"manipuliert\" (und zurück auf dem ersten Host erneut), weil beide Hosts eine Kopie des Lizenz-Ledgers teilten. Jeder Host führt jetzt seine eigene Kopie. Die Engine meldet ihre eigene Version; ein Linux-Dienst ohne HOSTNAME verwendet den Kernel-Hostnamen für seine Hardware-ID.",
 				"ru": "Исправлено: при переключении резервирования экземпляр переходит на другой хост, и лицензия там показывала «подделана» (и снова на первом хосте), потому что обе машины использовали одну общую копию журнала лицензии. Теперь каждый хост хранит свою копию. Движок сообщает собственную версию; служба Linux без HOSTNAME использует имя хоста ядра для своего аппаратного идентификатора.",
