@@ -252,9 +252,17 @@ class RockwellEthernetip extends utils.Adapter {
 	 * @returns the sealed ledger, or '' when there is none
 	 */
 	async readLicenceLedger() {
+		// Redundancy (HA): the instance moves to the other host on a failover while the ioBroker DB
+		// is shared, but the copy is sealed for the host that wrote it (one shared copy read on the
+		// other host is "tampered"). So every host keeps its own copy: native.blobs[<host>], the
+		// per-server rule of the licence key. The single native.blob of older versions is read
+		// only while no host has written its own copy yet.
 		try {
-			const o = await this.getObjectAsync('licenceLedger');
-			return (o && o.native && typeof o.native.blob === 'string' && o.native.blob) || '';
+			const n = ((await this.getObjectAsync('licenceLedger')) || {}).native || {};
+			if (n.blobs && typeof n.blobs === 'object') {
+				return typeof n.blobs[this.host] === 'string' ? n.blobs[this.host] : '';
+			}
+			return (typeof n.blob === 'string' && n.blob) || '';
 		} catch {
 			return '';
 		}
@@ -266,11 +274,13 @@ class RockwellEthernetip extends utils.Adapter {
 	 * @param blob - the sealed ledger the engine emitted
 	 */
 	async writeLicenceLedger(blob) {
-		await this.setObjectAsync('licenceLedger', {
+		await this.setObjectNotExistsAsync('licenceLedger', {
 			type: 'meta',
 			common: { name: 'licence ledger (RFC-005)', type: 'meta' },
-			native: { blob },
+			native: {},
 		});
+		// a merge: the other host's copy stays; the old shared copy is emptied
+		await this.extendObjectAsync('licenceLedger', { native: { blob: '', blobs: { [this.host]: blob } } });
 	}
 
 	/**
